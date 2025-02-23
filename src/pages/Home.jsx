@@ -5,6 +5,7 @@ import React from "react";
 import logo_v2 from "../assets/images/logo_v2.png";
 import { useNavigate } from "react-router-dom";
 import chatbotSerivce from "../services/chatbotService";
+import TextArea from "antd/es/input/TextArea";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -52,10 +53,8 @@ const Home = () => {
         context: "string",
       };
 
-      console.log(payload);
-
       const response = await chatbotSerivce.post(
-        "/chatbot-system/chat", 
+        "/chatbot-system/chat",
         payload,
         {
           headers: {
@@ -66,8 +65,7 @@ const Home = () => {
         }
       );
 
-      console.log(response);
-      const answer = response.answer;
+      const answer = response.data.answer;
       const receivedMessage = { content: answer, type: "received" };
       setMessages((prevMessages) => [...prevMessages, receivedMessage]);
     } catch (error) {
@@ -80,7 +78,8 @@ const Home = () => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
       handleSendMessage(inputValue);
     }
   };
@@ -195,35 +194,34 @@ const Home = () => {
           onClick={showDrawer}
         />
       </div>
-      <Drawer
-        title="AI Toán Tiểu Học"
-        onClose={onClose}
-        open={open}
-        size="large"
-      >
+      <Drawer title="Chatbot" onClose={onClose} open={open} size="large">
         <div className="flex flex-col h-full">
           <div className="flex-1 overflow-y-auto p-3">
             {messages.map((message, index) => (
-              <div
+              <p
                 key={index}
-                className={`p-2 my-2 rounded-lg max-w-[70%] ${
+                className={`p-2 my-2 rounded-lg ${
                   message.type === "sent"
-                    ? "bg-blue-500 text-white self-end"
-                    : "bg-gray-300 text-black self-start"
+                    ? "bg-blue-500 text-white self-end max-w-[60%]"
+                    : "bg-gray-300 text-black text-center max-w-[90%]"
                 }`}
               >
                 {message.content}
-              </div>
+              </p>
             ))}
           </div>
-          <div className="p-3 border-t">
-            <Input
+          <div className="p-3 border-t flex flex-col">
+            <TextArea
               value={inputValue}
               onChange={handleInputChange}
               onKeyPress={handleKeyPress}
               placeholder="Nhập tin nhắn..."
             />
-            <Button type="primary" onClick={handleSendMessage} className="mt-2">
+            <Button
+              type="primary"
+              onClick={handleSendMessage}
+              className="mt-2 self-end"
+            >
               Gửi
             </Button>
           </div>
@@ -234,3 +232,7 @@ const Home = () => {
 };
 
 export default Home;
+
+const sentMessageStyle = {};
+
+const receivedMessageStyle = {};
