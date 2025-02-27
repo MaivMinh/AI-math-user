@@ -10,8 +10,6 @@ import {
   UserOutlined,
   BankOutlined,
 } from "@ant-design/icons";
-import { Content } from "antd/es/layout/layout";
-import Sider from "antd/es/layout/Sider";
 
 const MainLayout = () => {
   const menuItems = [
@@ -48,10 +46,6 @@ const MainLayout = () => {
   ];
 
   const navigate = useNavigate();
-
-  const handleMenuClick = (e) => {
-    navigate(e.key);
-  };
 
   return (
     <>
