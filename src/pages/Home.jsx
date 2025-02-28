@@ -6,6 +6,7 @@ import logo_v2 from "../assets/images/logo_v2.png";
 import { useNavigate } from "react-router-dom";
 import chatbotSerivce from "../services/chatbotService";
 import TextArea from "antd/es/input/TextArea";
+import ChapterCard from "../components/Home/ChapterCard"
 
 const Home = () => {
   const navigate = useNavigate();
@@ -89,15 +90,13 @@ const Home = () => {
       {contextHolder}
       <div className="carousel">
         <Carousel
-          autoplay={{
-            dotDuration: true,
-          }}
+          autoplay={false}
           autoplaySpeed={5000}
           speed={1000}
         >
           <div style={contentStyle}>
             <h3 style={contentStyle} className="grid grid-cols-10 h-full">
-              <p className="col-span-2 h-full">
+              <p className="col-span-2 h-full flex items-center">
                 <img
                   src={logo_v2}
                   alt="logo"
@@ -105,7 +104,7 @@ const Home = () => {
                 />
               </p>
               <p className="col-span-8 flex flex-col items-start justify-start h-4/5 my-[2.5%] gap-y-5">
-                <h3 className="text-2xl font-bold text-white">
+                <h3 className="text-3xl font-bold text-white">
                   Nguyễn Hữu Thương
                 </h3>
                 <p className="text-lg text-white">Lớp 3</p>
@@ -132,59 +131,27 @@ const Home = () => {
           </div>
         </Carousel>
       </div>
-      <div className="w-full">
+      <div className="w-full mt-10">
         <div className="w-full mb-10">
-          <h1 className="text-2xl font-bold text-left mt-5">Đang học</h1>
+          <h1 className="text-3xl font-bold text-left mt-5">BÀI HỌC GẦN ĐÂY</h1>
         </div>
-        <div className="grid grid-cols-1 gap-y-5 sm:grid-cols-2 sm:gap-x-2 sm:gap-y-2 md:grid-cols-3 md:gap-x-3 md:gap-y-3 lg:grid-cols-4 lg:gap-x-5 lg:gap-y-5 mx-auto">
-          <div className="w-[280px] h-[300px] bg-emerald-400 rounded-2xl"></div>
-          <div className="w-[280px] h-[300px] bg-emerald-400 rounded-2xl"></div>
-          <div className="w-[280px] h-[300px] bg-emerald-400 rounded-2xl"></div>
-          <div className="w-[280px] h-[300px] bg-emerald-400 rounded-2xl"></div>
-          <div className="w-[280px] h-[300px] bg-emerald-400 rounded-2xl"></div>
-          <div className="w-[280px] h-[300px] bg-emerald-400 rounded-2xl"></div>
+        <div className="w-full flex flex-wrap gap-10 mb-10 items-start">
+          <ChapterCard chapter={1} lesson={1} />
+          <ChapterCard chapter={1} lesson={1} />
         </div>
       </div>
-      <div className="w-full mt-20">
+      <div className="w-full mt-10">
         <div className="w-full mb-10">
-          <h1 className="text-2xl font-bold text-left mt-5">Chương học</h1>
+          <h1 className="text-3xl font-bold text-left mt-5">CHƯƠNG ĐANG HỌC</h1>
         </div>
-        <div className="w-full overflow-x-auto whitespace-nowrap">
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            1
-          </div>
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            2
-          </div>
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            3
-          </div>
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            4
-          </div>
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            5
-          </div>
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            6
-          </div>
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            7
-          </div>
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            8
-          </div>
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            9
-          </div>
-          <div className="inline-block mr-10 w-[200px] h-[200px] bg-red-400 rounded-xl">
-            10
-          </div>
-          <div className="inline-block w-[200px] h-[200px] bg-red-400 rounded-xl">
-            11
-          </div>
+        <div className="w-full flex flex-wrap gap-10 mb-10 items-start">
+          <ChapterCard chapter={1} lesson={1} colour={"#B18CFE"} />
+          <ChapterCard chapter={1} lesson={1} colour={"#B18CFE"} />
+          <ChapterCard chapter={1} lesson={1} colour={"#B18CFE"} />
+          <ChapterCard chapter={1} lesson={1} colour={"#B18CFE"} />
         </div>
       </div>
+      
       <div className="fixed bottom-5 right-5">
         <Button
           type="primary"
