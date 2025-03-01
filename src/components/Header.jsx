@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import header_logo from "../assets/images/header_logo.png";
 import { Badge, Button, Dropdown, Input, Menu } from "antd";
+import toASCIISlug from "../utils/slug.js";
 import {
   BellOutlined,
   LineChartOutlined,
@@ -19,6 +20,7 @@ const Header = () => {
   const navigate = useNavigate();
   const [search, setSearch] = React.useState("");
   const location = useLocation();
+  const { currentLesson } = useContext(AppContext);
 
   const [notifications, setNotifications] = React.useState([
     "Notification 1",
@@ -52,6 +54,14 @@ const Header = () => {
 
   const handleSearchInputChange = (e) => {
     setSearch(e.target.value);
+  };
+
+  const handleLessonButtonClick = (e) => {
+    /// Sắp tới sẽ fetch dữ liệu cho lesson.
+    const { lessonOrder, chapterName } = currentLesson;
+
+    const slugName = toASCIISlug(chapterName);
+    navigate(`/bai-hoc/${slugName}`);
   };
 
   const menuUser = (
@@ -106,7 +116,7 @@ const Header = () => {
     <header className="w-full flex flex-col">
       <div className="w-full min-h-20 h-6 py-4 flex flex-row justify-between items-center px-10 border-b-[1px] border-[#85A900] rounded-b-lg">
         <div className="h-full">
-          <a className="h-full cursor-pointer" href="/dashboard">
+          <a className="h-full cursor-pointer" href="/">
             <img src={header_logo} className="h-full object-cover" />
           </a>
         </div>
@@ -176,22 +186,20 @@ const Header = () => {
         </div>
       </div>
       <div className="w-full min-h-15 py-4 flex flex-row justify-center items-center px-10 bg-[#E4F4F8] gap-x-10">
-        <Link to="/bai-hoc">
-          <Button type="text">
-            <span
-              className={
-                location.pathname === "/bai-hoc" ? activeStyle : inactiveStyle
-              }
-            >
-              HỌC BÀI
-            </span>
-          </Button>
-        </Link>
+        <Button type="text" onClick={handleLessonButtonClick}>
+          <span
+            className={
+              location.pathname.startsWith("/bai-hoc") ? activeStyle : inactiveStyle
+            }
+          >
+            HỌC BÀI
+          </span>
+        </Button>
         <Link to="/kiem-tra-them">
           <Button type="text">
             <span
               className={
-                location.pathname === "/kiem-tra-them"
+                location.pathname.startsWith("/kiem-tra-them")
                   ? activeStyle
                   : inactiveStyle
               }
@@ -204,7 +212,7 @@ const Header = () => {
           <Button type="text">
             <span
               className={
-                location.pathname === "/dien-dan" ? activeStyle : inactiveStyle
+                location.pathname.startsWith("/dien-dan") ? activeStyle : inactiveStyle
               }
             >
               DIỄN ĐÀN
@@ -215,7 +223,7 @@ const Header = () => {
           <Button type="text">
             <span
               className={
-                location.pathname === "/tro-choi-toan-hoc"
+                location.pathname.startsWith("/tro-choi-toan-hoc")
                   ? activeStyle
                   : inactiveStyle
               }
@@ -228,7 +236,7 @@ const Header = () => {
           <Button type="text">
             <span
               className={
-                location.pathname === "/dau-truong"
+                location.pathname.startsWith("/dau-truong")
                   ? activeStyle
                   : inactiveStyle
               }
