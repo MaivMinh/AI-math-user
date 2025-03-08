@@ -58,10 +58,7 @@ const Header = () => {
 
   const handleLessonButtonClick = (e) => {
     /// Sắp tới sẽ fetch dữ liệu cho lesson.
-    const { lessonOrder, chapterName } = currentLesson;
-
-    const slugName = toASCIISlug(chapterName);
-    navigate(`/bai-hoc/${slugName}`);
+    navigate(`/bai-hoc/`);
   };
 
   const menuUser = (

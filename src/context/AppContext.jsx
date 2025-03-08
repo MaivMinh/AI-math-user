@@ -2,12 +2,11 @@ import { jwtDecode } from "jwt-decode";
 import React, { createContext, useState, useEffect, useContext } from "react";
 
 const currentLesson = {
-  "grade": 1,
-  "chapterOrder": 1,
-  "chapterName": "Làm quen với một số hình",
-  "lessonOrder": 3,
+  grade: 1,
+  chapterOrder: 1,
+  chapterName: "Làm quen với một số hình",
+  lessonOrder: 3,
 };
-
 
 export const AppContext = createContext({
   accountId: null,
@@ -15,14 +14,19 @@ export const AppContext = createContext({
   isAuthenticated: false,
   login: () => {},
   logout: () => {},
+  currentLesson: null,
+  chapters: null,
+  setChapters: () => {},
+  grade: null
 });
 export const AppContextProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accountId, setAccountId] = useState(null);
   const [role, setRole] = useState(null);
+  const [chapters, setChapters] = useState([]);
   const [grade, setGrade] = useState(null);
 
-  function handleLogin(data) {
+  async function handleLogin(data) {
     const token = data.accessToken;
     localStorage.setItem("access-token", token);
     try {
@@ -32,7 +36,7 @@ export const AppContextProvider = ({ children }) => {
       setIsAuthenticated(true);
       setGrade(decodedToken.grade);
     } catch (error) {
-      console.error("Failed to decode token:", error);
+      console.log(error);
       setIsAuthenticated(false);
       localStorage.removeItem("access-token");
       return;
@@ -47,25 +51,27 @@ export const AppContextProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("access-token");
-    if (token) {
-      handleLogin({ accessToken: token });
-    } else
-      handleLogin({
-        accessToken:
-          "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBSSBNYXRoIGFwcGxpY2F0aW9uIiwiaWF0IjoxNzQwNzE3OTYzLCJleHAiOjE3NzIyNTM5NjMsImF1ZCI6IiIsInN1YiI6ImFjY2VzcyB0b2tlbiIsInJvbGUiOiJVU0VSIiwiYWNjb3VudF9pZCI6IjEiLCJncmFkZSI6IjEifQ.L6gDofA9j5NRpclABN3Ahjtr490niBz48mhqagGChPw",
-      });
+    const fetchData = async () => {
+      const token = localStorage.getItem("access-token");
+      if (token) {
+        await handleLogin({ accessToken: token });
+      }
+    };
+    fetchData();
   }, []);
 
   return (
     <AppContext.Provider
       value={{
-        accountId: accountId,
+        accountId: 2,
         role: role,
         isAuthenticated,
         logout: handleLogout,
         login: handleLogin,
         currentLesson: currentLesson,
+        chapters: chapters,
+        setChapters: setChapters,
+        grade: grade
       }}
     >
       {children}

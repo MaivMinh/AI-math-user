@@ -6,11 +6,13 @@ import { BackwardOutlined, ForwardOutlined } from "@ant-design/icons";
 
 const slides = [slide_1, slide_2];
 
-const Slide = ({}) => {
+const Slide = ({ chapter, lesson, height, props }) => {
+
   const carouseRef = React.useRef();
+  
   const carouselStyle = {
     margin: 0,
-    height: "450px",
+    height: height,
     lineHeight: "450px",
     textAlign: "center",
   };
@@ -87,7 +89,7 @@ const Slide = ({}) => {
             <span className="mr-2">
               <BackwardOutlined />
             </span>
-            Quay lại
+            Trang trước
           </button>
 
           <button
@@ -97,10 +99,9 @@ const Slide = ({}) => {
             <span className="mr-2">
               <ForwardOutlined />
             </span>
-            Tiếp theo
+            Trang sau
           </button>
         </p>
-        ˝
       </div>
     </div>
   );

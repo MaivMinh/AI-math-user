@@ -1,7 +1,12 @@
 import { Button, Form, Layout, Menu, theme } from "antd";
 import Sider from "antd/es/layout/Sider";
-import React, { useContext, useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import {
   EditOutlined,
   FilePdfOutlined,
@@ -52,14 +57,25 @@ const commentItems = [
 ];
 
 const Lesson = () => {
-  const {accountId} = useContext(AppContext);
+  const { accountId, chapters } = useContext(AppContext);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState(null);
   const [comments, setComments] = React.useState(commentItems);
   const [text, setText] = React.useState("");
   const { artifact } = useParams();
+  const [searchParams] = useSearchParams();
+  const lessonOrder = searchParams.get("lessonOrder");
+  const chapterOrder = searchParams.get("chapterOrder");
   const navigate = useNavigate();
   const location = useLocation();
+  const height = useRef(450);
+
+  const chapter = chapters?.find(
+    (chapter) => chapter.chapterOrder === parseInt(chapterOrder)
+  );
+  const lesson = chapter?.lessons?.find(
+    (lesson) => lesson.lessonOrder === parseInt(lessonOrder)
+  );
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -83,13 +99,15 @@ const Lesson = () => {
   const renderContent = () => {
     switch (artifact) {
       case "slide":
-        return <Slide />;
+        return <Slide chapter={chapter} lesson={lesson} height={height.current} />;
       case "video":
-        return <Video />;
+        return (
+          <Video chapter={chapter} lesson={lesson} height={height.current} />
+        );
       case "bai-tap":
-        return <Quiz />;
+        return <Quiz chapter={chapter} lesson={lesson} height={height.current} />;
       default:
-        return <Slide />;
+        return <Slide chapter={chapter} lesson={lesson} height={height.current} />;
     }
   };
 
@@ -99,13 +117,12 @@ const Lesson = () => {
 
   const handleChangeArtifact = (e) => {
     setSelectedKey(e.key);
-    console.log(location);
     switch (e.key) {
       case "1":
         navigate(
           location.pathname.replace(
             location.pathname.substring(location.pathname.lastIndexOf("/")),
-            "/slide"
+            `/slide?chapterOrder=${chapterOrder}&lessonOrder=${lessonOrder}`
           )
         );
         break;
@@ -113,7 +130,7 @@ const Lesson = () => {
         navigate(
           location.pathname.replace(
             location.pathname.substring(location.pathname.lastIndexOf("/")),
-            "/video"
+            `/video?chapterOrder=${chapterOrder}&lessonOrder=${lessonOrder}`
           )
         );
         break;
@@ -121,7 +138,7 @@ const Lesson = () => {
         navigate(
           location.pathname.replace(
             location.pathname.substring(location.pathname.lastIndexOf("/")),
-            "/bai-tap"
+            `/bai-tap?chapterOrder=${chapterOrder}&lessonOrder=${lessonOrder}`
           )
         );
         break;
@@ -159,6 +176,11 @@ const Lesson = () => {
     } else {
       setText(e.target.value);
     }
+  };
+
+  const handleCollapseButton = () => {
+    setCollapsed(!collapsed);
+    height.current = collapsed ? 450 : 500;
   };
 
   return (
@@ -201,15 +223,15 @@ const Lesson = () => {
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={() => setCollapsed(!collapsed)}
+              onClick={handleCollapseButton}
               style={{
                 fontSize: "20px",
                 width: 64,
                 height: 16,
               }}
             />
-            <span className="text-xl font-semibold text-[#FF8800]">
-              Bài 4: Phép nhân
+            <span className="text-xl font-semibold text-[#FFAB01]">
+              {chapter?.chapterName} - {lesson?.lessonName}
             </span>
           </p>
           <Content

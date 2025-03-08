@@ -12,9 +12,6 @@ import Forum from "./pages/Forum.jsx";
 import MathGame from "./pages/MathGame.jsx";
 import BattleField from "./pages/BattleField.jsx";
 import Lesson from "./pages/Lesson.jsx";
-import Slide from "./components/Slide.jsx";
-import Video from "./components/Video.jsx";
-import Quiz from "./components/Quiz.jsx";
 
 function App() {
   return (
@@ -26,9 +23,9 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/bai-hoc/:chapterName" element={<Study />} />
+            <Route path="/bai-hoc/" element={<Study />} />
             <Route
-              path="/bai-hoc/:chapterName/:lessonId/:artifact"
+              path="/bai-hoc/:chapterName/:lessonName/:artifact"
               element={<Lesson />}
             />
             <Route path="/kiem-tra-them" element={<Practice />} />
