@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, Carousel, Drawer, Input, message } from "antd";
 import { MessageOutlined, TrophyFilled } from "@ant-design/icons";
 import React from "react";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import chatbotSerivce from "../services/chatbotService";
 import TextArea from "antd/es/input/TextArea";
 import ChapterCard from "../components/Home/ChapterCard"
+import { AppContext } from "../context/AppContext";
 
 const Home = () => {
   const navigate = useNavigate();
