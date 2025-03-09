@@ -8,7 +8,7 @@ const MultipleChoice = ({ question, onClick, props }) => {
     setSelectedAnswer(answer);
     onClick({
       questionId: question?.questionId,
-      isCorrect: answer?.isCorrect,
+      answer: answer,
     });
   };
 
@@ -30,7 +30,7 @@ const MultipleChoice = ({ question, onClick, props }) => {
             />
           )}
         </p>
-        <div className="w-4/5 grid grid-cols-2 gap-4 mx-auto mt-20 gap-x-10 gap-y-10">
+        <div className="w-4/5 grid grid-cols-2 gap-4 mx-auto mt-10 gap-x-10 gap-y-10">
           {question?.choiceAnswers?.map((answer, index) => (
             <button
               key={index}
