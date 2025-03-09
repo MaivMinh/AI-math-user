@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import logo from "../assets/images/logo.png";
 import { Button, Form } from "antd";
-import { SyncOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  LockOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  SyncOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import Input from "../components/Input";
 import register_background from "../assets/images/register_background.png";
 import { Link } from "react-router-dom";
@@ -34,7 +41,7 @@ const Register = () => {
 
   return (
     <div
-      className="h-[650px] w-6xl shadow-md mx-auto mt-10 grid grid-cols-2 rounded-2xl "
+      className="h-[650px] w-6xl shadow-md m-auto mt-10 grid grid-cols-2 rounded-2xl "
       style={{
         backgroundImage: `url(${register_background})`,
         backgroundSize: "cover",
@@ -67,10 +74,10 @@ const Register = () => {
       </div>
       <div className="col-span-1 bg-white rounded-r-2xl flex flex-col items-center justify-start">
         <p className="text-3xl font-bold text-[#B18CFE] mt-10 text-left w-full ml-8">
-          Register
+          Đăng kí
         </p>
         <p className="ml-8 mt-2 text-lg text-[#B18CFE] w-full text-wrap">
-          Creat your account! It's free and only takes a minute.
+          Hãy tạo tài khoản của bạn và hoàn toàn miễn phí!
         </p>
         {error && (
           <Alert
@@ -87,7 +94,10 @@ const Register = () => {
           autoComplete="off"
           style={{ width: "100%", padding: "0 24px", marginTop: 24 }}
         >
-          <Form.Item name={"username"} style={{ marginBottom: 24 }}>
+          <Form.Item
+            name={"username"}
+            style={{ marginBottom: 24, position: "relative" }}
+          >
             <Input
               name={"username"}
               type={"username"}
@@ -96,8 +106,21 @@ const Register = () => {
               onChange={(e) => setUsername(e.target.value)}
               autoFocus
             />
+            <UserOutlined
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "1rem",
+                transform: "translateY(-50%)",
+                color: "#B18CFE",
+                fontSize: "1rem",
+              }}
+            />
           </Form.Item>
-          <Form.Item name={"email"} style={{ marginBottom: 24 }}>
+          <Form.Item
+            name={"email"}
+            style={{ marginBottom: 24, position: "relative" }}
+          >
             <Input
               name={"email"}
               type={"email"}
@@ -105,8 +128,21 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            <MailOutlined
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "1rem",
+                transform: "translateY(-50%)",
+                color: "#B18CFE",
+                fontSize: "1rem",
+              }}
+            />
           </Form.Item>
-          <Form.Item name={"phoneNumber"} style={{ marginBottom: 24 }}>
+          <Form.Item
+            name={"phoneNumber"}
+            style={{ marginBottom: 24, position: "relative" }}
+          >
             <Input
               name={"phoneNumber"}
               type={"text"}
@@ -114,17 +150,43 @@ const Register = () => {
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
             />
+            <PhoneOutlined
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "1rem",
+                transform: "translateY(-50%)",
+                color: "#B18CFE",
+                fontSize: "1rem",
+              }}
+            />
           </Form.Item>
-          <Form.Item name={"password"} style={{ marginBottom: 24 }}>
+          <Form.Item
+            name={"password"}
+            style={{ marginBottom: 24, position: "relative" }}
+          >
             <Input
               name={"password"}
               type={"password"}
-              label={"Password"}
+              label={"Mật khẩu"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <LockOutlined
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "1rem",
+                transform: "translateY(-50%)",
+                color: "#B18CFE",
+                fontSize: "1rem",
+              }}
+            />
           </Form.Item>
-          <Form.Item name={"confirmPassword"} style={{ marginBottom: 24 }}>
+          <Form.Item
+            name={"confirmPassword"}
+            style={{ marginBottom: 24, position: "relative" }}
+          >
             <Input
               name={"confirmPassword"}
               type={"password"}
@@ -132,11 +194,21 @@ const Register = () => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
+            <CheckCircleOutlined
+              style={{
+                position: "absolute",
+                top: "50%",
+                right: "1rem",
+                transform: "translateY(-50%)",
+                color: "#B18CFE",
+                fontSize: "1rem",
+              }}
+            />
           </Form.Item>
           <p className="flex flex-row items-center justify-between w-full">
             <p>
               Bạn đã có tài khoản?{" "}
-              <Link to="/login" className="text-[#B18CFE] text-lg">
+              <Link to="/login" className="text-[#B18CFE]">
                 Đăng nhập
               </Link>
             </p>

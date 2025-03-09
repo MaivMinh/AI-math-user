@@ -112,6 +112,21 @@ const Login = () => {
                 Quên mật khẩu?
               </Button>
             </Space>
+            <Space
+              style={{
+                marginTop: 6,
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "left",
+                fontSize: 18,
+              }}
+            >
+              <span className="text-gray-500 text-sm">Chưa có tài khoản?</span>
+              <Link to={"/register"}>
+                <span className="text-blue-600 text-sm">Đăng kí</span>
+              </Link>
+            </Space>
             <div className="mt-6 w-full flex flex-row items-center justify-center">
               <Button
                 type="primary"
@@ -141,7 +156,9 @@ const Login = () => {
               <p className="grid grid-cols-10 w-full gap-x-2">
                 <p className="h-[1px] bg-gray-700 col-span-3"></p>
                 <p className="col-span-4 font-semibold -translate-y-1/2 text-md flex flex0row items-center justify-center">
-                  <span className="text-center text-gray-500">hoặc đăng nhập với</span>
+                  <span className="text-center text-gray-500">
+                    hoặc đăng nhập với
+                  </span>
                 </p>
                 <p className="h-[1px] bg-gray-700 col-span-3"></p>
               </p>
@@ -160,21 +177,6 @@ const Login = () => {
               </Link>
               <Link to="/auth/google">
                 <img src={google} width={40} className="object-cover" />
-              </Link>
-            </Space>
-            <Space
-              style={{
-                marginTop: 24,
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "left",
-                fontSize: 18,
-              }}
-            >
-              <span className="text-gray-500 text-md">Chưa có tài khoản?</span>
-              <Link to={"/register"}>
-                <span className="text-blue-600">Đăng kí</span>
               </Link>
             </Space>
           </Form.Item>
