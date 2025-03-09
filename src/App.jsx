@@ -12,6 +12,7 @@ import Forum from "./pages/Forum.jsx";
 import MathGame from "./pages/MathGame.jsx";
 import BattleField from "./pages/BattleField.jsx";
 import Lesson from "./pages/Lesson.jsx";
+import Profile from "./components/Profile.jsx";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/home" element={<Home />} />
             <Route path="/bai-hoc/" element={<Study />} />
             <Route
