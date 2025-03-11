@@ -7,9 +7,8 @@ import { BackwardOutlined, ForwardOutlined } from "@ant-design/icons";
 const slides = [slide_1, slide_2];
 
 const Slide = ({ chapter, lesson, height, props }) => {
-
   const carouseRef = React.useRef();
-  
+
   const carouselStyle = {
     margin: 0,
     height: height,
@@ -51,8 +50,8 @@ const Slide = ({ chapter, lesson, height, props }) => {
   };
 
   return (
-    <div className="w-full">
-      <div>
+    <div className={`w-full h-[${height}px] relative`}>
+      <div className="w-full h-full">
         <ConfigProvider
           theme={{
             components: {
@@ -70,18 +69,22 @@ const Slide = ({ chapter, lesson, height, props }) => {
             draggable
             prevArrow={<PrevArrow />}
             nextArrow={<NextArrow />}
-            style={{}}
+            style={{ width: "100%", height: `${height}px` }}
           >
             {slides.map((slide, index) => (
               <div key={index}>
                 <h3 style={carouselStyle}>
-                  <img src={slide} alt={`Slide ${index + 1}`} />
+                  <img
+                    src={slide}
+                    alt={`Slide ${index + 1}`}
+                    className="w-full h-full object-contain"
+                  />
                 </h3>
               </div>
             ))}
           </Carousel>
         </ConfigProvider>
-        <p className="w-full text-right my-10 flex flex-row justify-between items-center">
+        <p className="w-full text-right my-5 flex flex-row justify-between items-center absolute -bottom-15 right-0">
           <button
             className="bg-[#B18CFE] text-white px-3 py-1 rounded-lg ml-4 hover:bg-[#b08cfec4] transition-colors duration-300 font-semibold text-lg cursor-pointer"
             onClick={handlePrevQuiz}

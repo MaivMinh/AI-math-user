@@ -21,6 +21,7 @@ import Quiz from "../components/Quiz";
 import TextArea from "antd/es/input/TextArea";
 import Comment from "../components/Comment";
 import { AuthContext } from "../context/AuthContext";
+import base from "../services/base";
 
 const commentItems = [
   {
@@ -57,7 +58,7 @@ const commentItems = [
 ];
 
 const Lesson = () => {
-  const { accountId, chapters } = useContext(AuthContext);
+  const { accountId, grade } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState(null);
   const [comments, setComments] = React.useState(commentItems);
@@ -69,6 +70,32 @@ const Lesson = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const height = useRef(450);
+  const [chapters, setChapters] = useState([]);
+
+  useEffect(() => {
+    if (grade) {
+      const fetchContent = async () => {
+        switch (artifact) {
+          case "slide":
+            setSelectedKey("1");
+            break;
+          case "video":
+            setSelectedKey("2");
+            break;
+          case "bai-tap":
+            setSelectedKey("3");
+            break;
+          default:
+            setSelectedKey("1");
+        }
+
+        const response = await base.get(`/api/chapters/grade/${grade}/details`);
+        const data = response.data;
+        setChapters(data);
+      };
+      fetchContent();
+    }
+  }, [grade]);
 
   const chapter = chapters?.find(
     (chapter) => chapter.chapterOrder === parseInt(chapterOrder)
@@ -77,37 +104,24 @@ const Lesson = () => {
     (lesson) => lesson.lessonOrder === parseInt(lessonOrder)
   );
 
-  useEffect(() => {
-    const fetchContent = async () => {
-      switch (artifact) {
-        case "slide":
-          setSelectedKey("1");
-          break;
-        case "video":
-          setSelectedKey("2");
-          break;
-        case "bai-tap":
-          setSelectedKey("3");
-          break;
-        default:
-          setSelectedKey("1");
-      }
-    };
-    fetchContent();
-  }, []);
-
   const renderContent = () => {
     switch (artifact) {
       case "slide":
-        return <Slide chapter={chapter} lesson={lesson} height={height.current} />;
+        return (
+          <Slide chapter={chapter} lesson={lesson} height={height.current} />
+        );
       case "video":
         return (
           <Video chapter={chapter} lesson={lesson} height={height.current} />
         );
       case "bai-tap":
-        return <Quiz chapter={chapter} lesson={lesson} height={height.current} />;
+        return (
+          <Quiz chapter={chapter} lesson={lesson} height={height.current} />
+        );
       default:
-        return <Slide chapter={chapter} lesson={lesson} height={height.current} />;
+        return (
+          <Slide chapter={chapter} lesson={lesson} height={height.current} />
+        );
     }
   };
 
@@ -244,7 +258,7 @@ const Lesson = () => {
             }}
           >
             {renderContent()}
-            <div className="px-5 mt-10 w-full">
+            <div className="px-5 mt-30 w-full">
               <p className="text-left text-lg font-bold text-[#FFAB01] mb-5">
                 Bình luận {"(2)"}
               </p>
