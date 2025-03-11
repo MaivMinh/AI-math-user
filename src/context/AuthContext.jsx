@@ -8,37 +8,32 @@ const currentLesson = {
   lessonOrder: 3,
 };
 
-export const AppContext = createContext({
+export const AuthContext = createContext({
   accountId: null,
   role: null,
   isAuthenticated: false,
   login: () => {},
   logout: () => {},
   currentLesson: null,
-  chapters: null,
-  setChapters: () => {},
-  grade: null
+  grade: null,
 });
-export const AppContextProvider = ({ children }) => {
+export const AuthContextProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accountId, setAccountId] = useState(null);
   const [role, setRole] = useState(null);
-  const [chapters, setChapters] = useState([]);
   const [grade, setGrade] = useState(null);
 
-  async function handleLogin(data) {
-    const token = data.accessToken;
-    localStorage.setItem("access-token", token);
+  async function handleLogin(token) {
     try {
       const decodedToken = jwtDecode(token);
       setAccountId(decodedToken.account_id);
       setRole(decodedToken.role);
       setIsAuthenticated(true);
       setGrade(decodedToken.grade);
+      localStorage.setItem("access-token", token);
     } catch (error) {
       console.log(error);
       setIsAuthenticated(false);
-      localStorage.removeItem("access-token");
       return;
     }
   }
@@ -48,20 +43,21 @@ export const AppContextProvider = ({ children }) => {
     setIsAuthenticated(false);
     setAccountId(null);
     setRole(null);
+    setGrade(null);
   }
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = () => {
       const token = localStorage.getItem("access-token");
       if (token) {
-        await handleLogin({ accessToken: token });
+        handleLogin(token);
       }
     };
     fetchData();
   }, []);
 
   return (
-    <AppContext.Provider
+    <AuthContext.Provider
       value={{
         accountId: 2,
         role: role,
@@ -69,15 +65,13 @@ export const AppContextProvider = ({ children }) => {
         logout: handleLogout,
         login: handleLogin,
         currentLesson: currentLesson,
-        chapters: chapters,
-        setChapters: setChapters,
-        grade: grade
+        grade: grade,
       }}
     >
       {children}
-    </AppContext.Provider>
+    </AuthContext.Provider>
   );
 };
 
 // Custom hook to access the context
-export const useAppContext = () => useContext(AppContext);
+export const useAppContext = () => useContext(AuthContext);

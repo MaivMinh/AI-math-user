@@ -4,15 +4,15 @@ import Title from "antd/es/typography/Title";
 import { UserOutlined, LockOutlined, SyncOutlined } from "@ant-design/icons";
 import { Alert, Button, Checkbox, Form, Input, Space } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { AppContext } from "../context/AppContext";
 import facebook from "../assets/images/facebook.png";
 import google from "../assets/images/google.png";
+import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useContext(AppContext);
+  const { login, isAuthenticated } = useContext(AuthContext);
 
   const onFinish = (values) => {
     setLoading(true);
@@ -22,7 +22,7 @@ const Login = () => {
     };
     setTimeout(() => {
       setLoading(false);
-      login(data);
+      login(data.accessToken);
       navigate("/"); // redirect to home page
     }, 3000);
   };

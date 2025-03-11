@@ -20,7 +20,7 @@ import Video from "../components/Video";
 import Quiz from "../components/Quiz";
 import TextArea from "antd/es/input/TextArea";
 import Comment from "../components/Comment";
-import { AppContext } from "../context/AppContext";
+import { AuthContext } from "../context/AuthContext";
 
 const commentItems = [
   {
@@ -57,7 +57,7 @@ const commentItems = [
 ];
 
 const Lesson = () => {
-  const { accountId, chapters } = useContext(AppContext);
+  const { accountId, chapters } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState(null);
   const [comments, setComments] = React.useState(commentItems);

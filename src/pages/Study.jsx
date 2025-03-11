@@ -1,6 +1,6 @@
 import { Button, Form, Skeleton, Space, Tooltip } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { AppContext } from "../context/AppContext";
+import { AuthContext } from "../context/AuthContext.jsx";
 import chapter_1 from "../assets/images/chapter_1.png";
 import {
   buildStyles,
@@ -55,29 +55,38 @@ const Study = () => {
   const [comments, setComments] = React.useState(commentItems);
   const content = useRef(null);
   const [text, setText] = React.useState("");
-  const { accountId, chapters, setChapters, grade } = useContext(AppContext);
+  const { accountId, grade } = useContext(AuthContext);
   const [seletedChapter, setSelectedChapter] = React.useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [chapters, setChapters] = useState([]);
+
+  /// Mặc định đây là private page. Thế nên khi đã vào được trang này thì các thông tin ở AppContext sẽ được load sẵn.
+  /// Nên do đó không cần phải kiểm tra accountId, grade, chapters, ... ở đây nữa.
+  /// Và vì vậy về cơ bản là grade không bao giờ bị null.
 
   useEffect(() => {
-    const updateData = async () => {
-      try {
-        const response = await base.get(`/api/chapters/grade/${grade}/details`);
-        const chapters = response.data;
-        setChapters(chapters);
-        setSelectedChapter(chapters[0]);
-        content.current = chapters[0];
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-        setLoading(false);
-      }
-    };
-    updateData();
-    setTimeout(() => {
-      setLoading(false);
-    }, 10000);
-  }, []);
+    if (grade) {
+      const fetchData = async () => {
+        try {
+          const response = await base.get(
+            `/api/chapters/grade/${grade}/details`
+          );
+          const data = response.data;
+          setChapters(data);
+          setSelectedChapter(data[0]);
+          content.current = data[0];
+          setLoading(false);
+          setError(false);
+        } catch (error) {
+          console.log(error);
+          setError(true);
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }
+  }, [grade]);
 
   const handleSelectChapter = (chapter) => {
     setSelectedChapter({
@@ -123,6 +132,37 @@ const Study = () => {
 
   return (
     <div className="px-5 min-h-screen w-full grid grid-cols-4 relative">
+      {error && (
+        <div className="flex flex-col items-center justify-center col-span-4 h-[70vh] p-6 rounded-xl border-2 border-dashed border-gray-300 bg-gray-50">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-24 w-24 text-gray-300 mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1}
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+          <h3 className="text-xl font-semibold text-gray-600 mb-2">
+            Không có dữ liệu
+          </h3>
+          <p className="text-gray-500 text-center max-w-xs">
+            Không tìm thấy nội dung bài học. Vui lòng thử lại sau hoặc liên hệ
+            hỗ trợ.
+          </p>
+          <button
+            className="mt-6 px-4 py-2 bg-[#B18CFE] hover:bg-[#a070fe] text-white font-medium rounded-lg transition-colors duration-300 cursor-pointer"
+            onClick={() => window.location.reload()}
+          >
+            Làm mới trang
+          </button>
+        </div>
+      )}
       <div className="col-span-1 items-center justify-start gap-y-4 px-4 overflow-x-hidden h-screen whitespace-nowrap overflow-y-hidden sticky">
         {loading ? (
           <Skeleton
@@ -134,7 +174,7 @@ const Study = () => {
           />
         ) : (
           <div className="w-ful h-full">
-            {chapters.length > 0 && (
+            {chapters?.length > 0 && (
               <div className="w-full">
                 {chapters?.map((chapter, index) => {
                   return (
@@ -187,7 +227,7 @@ const Study = () => {
           />
         ) : (
           <div className="w-full h-full">
-            {chapters.length > 0 && (
+            {chapters?.length > 0 && (
               <div className="w-full h-full">
                 <div className="px-5 grid grid-cols-10 gap-x-5 mb-5">
                   <div className="col-span-7 bg-[#FFAB01] rounded-xl px-10 py-2 flex flex-row justify-between items-start">
