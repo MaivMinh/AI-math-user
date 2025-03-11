@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import MultipleChoice from "./MultipleChoice.jsx";
 import base from "../services/base.js";
-import { AppContext } from "../context/AppContext.jsx";
+import { AuthContext } from "../context/AuthContext.jsx";
 import { BackwardOutlined, ForwardOutlined, QuestionCircleFilled } from "@ant-design/icons";
 import { Button, Carousel, ConfigProvider } from "antd";
 import { useRef } from "react";
@@ -9,7 +9,7 @@ import CalculateResult from "./CalculateResult.jsx";
 
 const Quiz = ({ chapter, lesson, height, props }) => {
   const [questions, setQuestions] = useState([]);
-  const { grade } = useContext(AppContext);
+  const { grade } = useContext(AuthContext);
   const [answers, setAnswers] = useState([]); /// Danh sách câu trả lời của người dùng
   
 

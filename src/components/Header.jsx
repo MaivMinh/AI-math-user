@@ -13,14 +13,13 @@ import {
 } from "@ant-design/icons";
 import temp_avatar from "../assets/images/temp_avatar.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { AppContext } from "../context/AppContext";
+import { AuthContext } from "../context/AuthContext";
 
 const Header = () => {
-  const { logout } = useContext(AppContext);
+  const { logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [search, setSearch] = React.useState("");
   const location = useLocation();
-  const { currentLesson } = useContext(AppContext);
 
   const [notifications, setNotifications] = React.useState([
     "Notification 1",

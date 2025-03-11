@@ -1,8 +1,13 @@
 import "./App.css";
 import MainLayout from "./components/MainLayout.jsx";
-import { AppContextProvider } from "../src/context/AppContext.jsx";
+import { AuthContextProvider } from "../src/context/AuthContext.jsx";
 import Login from "./pages/Login.jsx";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  BrowserRouter,
+} from "react-router-dom";
 import NotFoundPage from "./components/NotFoundPage.jsx";
 import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
@@ -16,8 +21,8 @@ import Profile from "./components/Profile.jsx";
 
 function App() {
   return (
-    <AppContextProvider>
-      <Router>
+    <BrowserRouter>
+      <AuthContextProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -37,8 +42,8 @@ function App() {
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </Router>
-    </AppContextProvider>
+      </AuthContextProvider>
+    </BrowserRouter>
   );
 }
 
