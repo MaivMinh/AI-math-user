@@ -17,13 +17,14 @@ const Quiz = ({ chapter, lesson, height, props }) => {
   const { grade } = useContext(AuthContext);
   const [answers, setAnswers] = useState([]); /// Danh sách câu trả lời của người dùng
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuizzes = async () => {
       setLoading(true);
       try {
         const response = await base.get(
-          `/api/Question/GetQuestionByGradeAndId/grade/1/lessionOrder/1`
+          `/grade/1/lessionorder/1`
         );
         const data = response.data;
         console.log(data);
@@ -190,7 +191,7 @@ const Quiz = ({ chapter, lesson, height, props }) => {
                 color="purple"
                 variant="filled"
                 size="large"
-                onClick={() => window.history.back()}
+                onClick={() => navigate('/bai-hoc')}
               >
                 Quay lại
               </Button>
