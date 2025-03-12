@@ -24,7 +24,7 @@ const Quiz = ({ chapter, lesson, height, props }) => {
       setLoading(true);
       try {
         const response = await base.get(
-          `/grade/1/lessionorder/1`
+          `/api/question/grade/1/lessonorder/1`
         );
         const data = response.data;
         console.log(data);
