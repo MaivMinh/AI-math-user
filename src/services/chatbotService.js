@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const chatbotSerivce = axios.create({
-  baseURL: "https://ai-math.moviereservation.software/api",
+  baseURL: "http://localhost:8000/api",
 });
 
 export default chatbotSerivce;

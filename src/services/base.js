@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const base = axios.create({
-  baseURL: "https://aimathprojectv2.azurewebsites.net",
+  baseURL: "http://localhost:8080",
   headers: {
     "Content-Type": "application/json",
   },
