@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  ai-math-backend:
+    image: ai-math-backend
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+  
+  ai-math-user:
+    image: ai-math-user
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - "3000:80"
+    depends_on:
+      - ai-math-backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
