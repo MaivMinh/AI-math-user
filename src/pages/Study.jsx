@@ -9,8 +9,8 @@ import {
 import { Link } from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 import Comment from "../components/Comment.jsx";
-import toASCIISlug from "../utils/slug.js";
-import base from "../services/base.js";
+import apiClient from "../services/apiClient.js";
+import { TitleContext } from "../context/TitleContext.jsx";
 
 const commentItems = [
   {
@@ -55,38 +55,42 @@ const Study = () => {
   const [comments, setComments] = React.useState(commentItems);
   const content = useRef(null);
   const [text, setText] = React.useState("");
-  const { accountId, grade } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const [seletedChapter, setSelectedChapter] = React.useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [chapters, setChapters] = useState([]);
-
-  /// Mặc định đây là private page. Thế nên khi đã vào được trang này thì các thông tin ở AppContext sẽ được load sẵn.
-  /// Nên do đó không cần phải kiểm tra accountId, grade, chapters, ... ở đây nữa.
-  /// Và vì vậy về cơ bản là grade không bao giờ bị null.
+  const { titles, setTitles } = useContext(TitleContext);
 
   useEffect(() => {
-    if (grade) {
-      const fetchData = async () => {
-        try {
-          const response = await base.get(
-            `/api/chapters/grade/${grade}/details`
-          );
-          const data = response.data;
-          setChapters(data);
-          setSelectedChapter(data[0]);
-          content.current = data[0];
-          setLoading(false);
-          setError(false);
-        } catch (error) {
-          console.log(error);
-          setError(true);
-          setLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [grade]);
+    const fetchData = async () => {
+      if (titles.length > 0) {
+        setChapters(titles);
+        setSelectedChapter(titles[0]);
+        content.current = titles[0];
+        setLoading(false);
+        setError(false);
+        return;
+      }
+      try {
+        const response = await apiClient.get(
+          `/api/chapters/grade/${auth.grade}/details`
+        );
+        const data = response.data;
+        setTitles(data);
+        setChapters(data);
+        setSelectedChapter(data[0]);
+        content.current = data[0];
+        setLoading(false);
+        setError(false);
+      } catch (error) {
+        console.log(error);
+        setError(true);
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [auth]);
 
   const handleSelectChapter = (chapter) => {
     setSelectedChapter({
@@ -101,7 +105,7 @@ const Study = () => {
       return;
     }
     const newComment = {
-      user_id: accountId,
+      user_id: auth.accountId,
       name: "Mai Van Minh", /// Các thông tin như name, avatar, sẽ được lấy từ db khi gửi về server.
       avatar: "https://randomuser.me/api/portraits/men/78.jpg",
       timestamp: new Date().toLocaleString(),
@@ -291,39 +295,21 @@ const Study = () => {
                         </p>
                         <p className="col-span-3 flex flex-row justify-end items-center gap-x-10">
                           <Link
-                            to={`${toASCIISlug(
-                              content.current.chapterName
-                            )}/${toASCIISlug(
-                              lesson.lessonName
-                            )}/slide?chapterOrder=${
-                              content.current.chapterOrder
-                            }&lessonOrder=${lesson.lessonOrder}`}
+                            to={`chapters/${content.current.chapterOrder}/lessons/${lesson.lessonOrder}/slide?`}
                           >
                             <span className="underline text-blue-500">
                               Slide
                             </span>
                           </Link>
                           <Link
-                            to={`${toASCIISlug(
-                              content.current.chapterName
-                            )}/${toASCIISlug(
-                              lesson.lessonName
-                            )}/video?chapterOrder=${
-                              content.current.chapterOrder
-                            }&lessonOrder=${lesson.lessonOrder}`}
+                            to={`chapters/${content.current.chapterOrder}/lessons/${lesson.lessonOrder}/video?`}
                           >
                             <span className="underline text-blue-500">
                               Video
                             </span>
                           </Link>
                           <Link
-                            to={`${toASCIISlug(
-                              content.current.chapterName
-                            )}/${toASCIISlug(
-                              lesson.lessonName
-                            )}/bai-tap?chapterOrder=${
-                              content.current.chapterOrder
-                            }&lessonOrder=${lesson.lessonOrder}`}
+                            to={`chapters/${content.current.chapterOrder}/lessons/${lesson.lessonOrder}/exercise?`}
                           >
                             <span className="underline text-blue-500">
                               Bài tập

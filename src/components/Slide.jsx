@@ -1,24 +1,21 @@
 import { Carousel, ConfigProvider } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import slide_1 from "../assets/images/slide_1.png";
 import slide_2 from "../assets/images/slide_2.png";
 import { BackwardOutlined, ForwardOutlined } from "@ant-design/icons";
+import { useParams } from "react-router-dom";
 
 const slides = [slide_1, slide_2];
 
-const Slide = ({ chapter, lesson, height, props }) => {
+const arrowStyle = {
+  color: "#5405F7", // Màu sắc của mũi tên
+};
+
+const Slide = ({ props }) => {
   const carouseRef = React.useRef();
+  const { chapterOrder, lessonOrder } = useParams();
 
-  const carouselStyle = {
-    margin: 0,
-    height: height,
-    lineHeight: "450px",
-    textAlign: "center",
-  };
-
-  const arrowStyle = {
-    color: "#5405F7", // Màu sắc của mũi tên
-  };
+  useEffect(() => {}, [chapterOrder, lessonOrder]);
 
   const PrevArrow = (props) => {
     const { className, style, onClick } = props;
@@ -49,8 +46,15 @@ const Slide = ({ chapter, lesson, height, props }) => {
     carouseRef.current.prev();
   };
 
+  const carouselStyle = {
+    margin: 0,
+    height: "450px",
+    lineHeight: "450px",
+    textAlign: "center",
+  };
+
   return (
-    <div className={`w-full h-[${height}px] relative`}>
+    <div className={`w-full h-[450px] relative`}>
       <div className="w-full h-full">
         <ConfigProvider
           theme={{
@@ -69,7 +73,7 @@ const Slide = ({ chapter, lesson, height, props }) => {
             draggable
             prevArrow={<PrevArrow />}
             nextArrow={<NextArrow />}
-            style={{ width: "100%", height: `${height}px` }}
+            style={{ width: "100%", height: `450px` }}
           >
             {slides.map((slide, index) => (
               <div key={index}>
@@ -84,7 +88,7 @@ const Slide = ({ chapter, lesson, height, props }) => {
             ))}
           </Carousel>
         </ConfigProvider>
-        <p className="w-full text-right my-5 flex flex-row justify-between items-center absolute -bottom-15 right-0">
+        <p className={`w-full text-right mt-5 flex flex-row justify-between items-center absolute -bottom-16 right-0`}>
           <button
             className="bg-[#B18CFE] text-white px-3 py-1 rounded-lg ml-4 hover:bg-[#b08cfec4] transition-colors duration-300 font-semibold text-lg cursor-pointer"
             onClick={handlePrevQuiz}

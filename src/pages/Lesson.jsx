@@ -2,6 +2,7 @@ import { Button, Form, Layout, Menu, theme } from "antd";
 import Sider from "antd/es/layout/Sider";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
+  Link,
   useLocation,
   useNavigate,
   useParams,
@@ -10,6 +11,7 @@ import {
 import {
   EditOutlined,
   FilePdfOutlined,
+  LeftCircleFilled,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   VideoCameraOutlined,
@@ -21,7 +23,8 @@ import Quiz from "../components/Quiz";
 import TextArea from "antd/es/input/TextArea";
 import Comment from "../components/Comment";
 import { AuthContext } from "../context/AuthContext";
-import base from "../services/base";
+import apiClient from "../services/apiClient";
+import { TitleContext } from "../context/TitleContext";
 
 const commentItems = [
   {
@@ -58,44 +61,46 @@ const commentItems = [
 ];
 
 const Lesson = () => {
-  const { accountId, grade } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState(null);
   const [comments, setComments] = React.useState(commentItems);
   const [text, setText] = React.useState("");
-  const { artifact } = useParams();
-  const [searchParams] = useSearchParams();
-  const lessonOrder = searchParams.get("lessonOrder");
-  const chapterOrder = searchParams.get("chapterOrder");
+  const { chapterOrder, lessonOrder, artifact } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const height = useRef(450);
   const [chapters, setChapters] = useState([]);
+  const { titles, setTitles } = useContext(TitleContext);
 
   useEffect(() => {
-    if (grade) {
-      const fetchContent = async () => {
-        switch (artifact) {
-          case "slide":
-            setSelectedKey("1");
-            break;
-          case "video":
-            setSelectedKey("2");
-            break;
-          case "bai-tap":
-            setSelectedKey("3");
-            break;
-          default:
-            setSelectedKey("1");
-        }
+    const fetchContent = async () => {
+      switch (artifact) {
+        case "slide":
+          setSelectedKey("1");
+          break;
+        case "video":
+          setSelectedKey("2");
+          break;
+        case "exercise":
+          setSelectedKey("3");
+          break;
+        default:
+          setSelectedKey("1");
+      }
 
-        const response = await base.get(`/api/chapters/grade/${grade}/details`);
+      if (titles.length > 0) {
+        setChapters(titles);
+      } else {
+        const response = await apiClient.get(
+          `/api/chapters/grade/${auth.grade}/details`
+        );
         const data = response.data;
+        setTitles(data);
         setChapters(data);
-      };
-      fetchContent();
-    }
-  }, [grade]);
+      }
+    };
+    fetchContent();
+  }, [auth, chapterOrder, lessonOrder, artifact]);
 
   const chapter = chapters?.find(
     (chapter) => chapter.chapterOrder === parseInt(chapterOrder)
@@ -107,21 +112,13 @@ const Lesson = () => {
   const renderContent = () => {
     switch (artifact) {
       case "slide":
-        return (
-          <Slide chapter={chapter} lesson={lesson} height={height.current} />
-        );
+        return <Slide />;
       case "video":
-        return (
-          <Video chapter={chapter} lesson={lesson} height={height.current} />
-        );
-      case "bai-tap":
-        return (
-          <Quiz chapter={chapter} lesson={lesson} height={height.current} />
-        );
+        return <Video />;
+      case "exercise":
+        return <Quiz />;
       default:
-        return (
-          <Slide chapter={chapter} lesson={lesson} height={height.current} />
-        );
+        return <Slide />;
     }
   };
 
@@ -136,7 +133,7 @@ const Lesson = () => {
         navigate(
           location.pathname.replace(
             location.pathname.substring(location.pathname.lastIndexOf("/")),
-            `/slide?chapterOrder=${chapterOrder}&lessonOrder=${lessonOrder}`
+            `/slide`
           )
         );
         break;
@@ -144,7 +141,7 @@ const Lesson = () => {
         navigate(
           location.pathname.replace(
             location.pathname.substring(location.pathname.lastIndexOf("/")),
-            `/video?chapterOrder=${chapterOrder}&lessonOrder=${lessonOrder}`
+            `/video`
           )
         );
         break;
@@ -152,9 +149,12 @@ const Lesson = () => {
         navigate(
           location.pathname.replace(
             location.pathname.substring(location.pathname.lastIndexOf("/")),
-            `/bai-tap?chapterOrder=${chapterOrder}&lessonOrder=${lessonOrder}`
+            `/exercise`
           )
         );
+        break;
+      case "4":
+        navigate("/study/");
         break;
       default:
         navigate(
@@ -171,7 +171,7 @@ const Lesson = () => {
       return;
     }
     const newComment = {
-      user_id: accountId,
+      user_id: auth.accountId,
       name: "Mai Van Minh", /// Các thông tin như name, avatar, sẽ được lấy từ db khi gửi về server.
       avatar: "https://randomuser.me/api/portraits/men/78.jpg",
       timestamp: new Date().toLocaleString(),
@@ -194,7 +194,6 @@ const Lesson = () => {
 
   const handleCollapseButton = () => {
     setCollapsed(!collapsed);
-    height.current = collapsed ? 450 : 500;
   };
 
   return (
@@ -229,6 +228,23 @@ const Lesson = () => {
                 icon: <EditOutlined />,
                 label: "Bài tập",
               },
+              {
+                key: "4",
+                icon: (
+                  <LeftCircleFilled
+                    style={{
+                      color: "#85A900",
+                      fontWeight: "bold",
+                      fontSize: "19px",
+                    }}
+                  />
+                ),
+                label: (
+                  <p className="w-full text-[#85A900] font-semibold text-lg cursor-pointer">
+                    Trở về
+                  </p>
+                ),
+              },
             ]}
           />
         </Sider>
@@ -245,7 +261,8 @@ const Lesson = () => {
               }}
             />
             <span className="text-xl font-semibold text-[#FFAB01]">
-              {chapter?.chapterName} - {lesson?.lessonName}
+              Chương {chapter?.chapterOrder}: {chapter?.chapterName} -{" "}
+              {lesson?.lessonName}
             </span>
           </p>
           <Content

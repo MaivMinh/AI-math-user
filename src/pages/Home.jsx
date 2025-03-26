@@ -7,7 +7,6 @@ import { useNavigate } from "react-router-dom";
 import chatbotSerivce from "../services/chatbotService";
 import TextArea from "antd/es/input/TextArea";
 import ChapterCard from "../components/Home/ChapterCard"
-import { AuthContext } from "../context/AuthContext";
 
 const Home = () => {
   const navigate = useNavigate();

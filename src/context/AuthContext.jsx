@@ -1,36 +1,65 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useState, useEffect, useContext } from "react";
 
-const currentLesson = {
-  grade: 1,
-  chapterOrder: 1,
-  chapterName: "Làm quen với một số hình",
-  lessonOrder: 3,
-};
-
 export const AuthContext = createContext({
-  accountId: null,
-  role: null,
-  isAuthenticated: false,
+  auth: {
+    accountId: null,
+    role: null,
+    isAuthenticated: false,
+    grade: null,
+  },
   login: () => {},
   logout: () => {},
-  currentLesson: null,
-  grade: null,
+  loading: null,
 });
 export const AuthContextProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [accountId, setAccountId] = useState(null);
-  const [role, setRole] = useState(null);
-  const [grade, setGrade] = useState(null);
+  const [auth, setAuth] = useState({
+    isAuthenticated: null,
+    accountId: null,
+    role: null,
+    grade: null,
+  });
+
+  const [loading, setLoading] = useState(true);
+
+  // Load auth data from localStorage when app starts
+  useEffect(() => {
+    const token = localStorage.getItem("access-token");
+    const storedUser = JSON.parse(localStorage.getItem("user")); // Store user info separately
+    if (token && storedUser) {
+      setAuth((prev) => {
+        return {
+          ...prev,
+          isAuthenticated: true,
+          accountId: storedUser.accountId,
+          role: storedUser.role,
+          grade: storedUser.grade,
+        };
+      });
+    }
+    setLoading(false);
+  }, []);
 
   async function handleLogin(token) {
     try {
       const decodedToken = jwtDecode(token);
-      setAccountId(decodedToken.account_id);
-      setRole(decodedToken.role);
-      setIsAuthenticated(true);
-      setGrade(decodedToken.grade);
+      const user = JSON.stringify({
+        isAuthenticated: true,
+        accountId: decodedToken.account_id,
+        role: decodedToken.role,
+        grade: decodedToken.grade,
+      });
       localStorage.setItem("access-token", token);
+      localStorage.setItem("user", user);
+      setAuth((prev) => {
+        return {
+          ...prev,
+          isAuthenticated: true,
+          accountId: decodedToken.account_id,
+          role: decodedToken.role,
+          grade: decodedToken.grade,
+        };
+      });
     } catch (error) {
       console.log(error);
       setIsAuthenticated(false);
@@ -38,34 +67,27 @@ export const AuthContextProvider = ({ children }) => {
     }
   }
 
-  function handleLogout() {
-    localStorage.removeItem("access-token");
-    setIsAuthenticated(false);
-    setAccountId(null);
-    setRole(null);
-    setGrade(null);
-  }
-
-  useEffect(() => {
-    const fetchData = () => {
-      const token = localStorage.getItem("access-token");
-      if (token) {
-        handleLogin(token);
-      }
-    };
-    fetchData();
-  }, []);
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("user");
+    setAuth((prev) => {
+      return {
+        ...prev,
+        isAuthenticated: false,
+        accountId: null,
+        role: null,
+        grade: null,
+      };
+    });
+  };
 
   return (
     <AuthContext.Provider
       value={{
-        accountId: 2,
-        role: role,
-        isAuthenticated,
-        logout: handleLogout,
+        auth: auth,
         login: handleLogin,
-        currentLesson: currentLesson,
-        grade: grade,
+        logout: handleLogout,
+        loading: loading,
       }}
     >
       {children}
