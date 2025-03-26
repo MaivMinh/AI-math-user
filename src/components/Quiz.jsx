@@ -21,7 +21,7 @@ const Quiz = ({ props }) => {
   const { auth } = useContext(AuthContext);
   const [answers, setAnswers] = useState([]); /// Danh sách câu trả lời của người dùng
   const [loading, setLoading] = useState(false);
-  const { chapterOrder, lessonOrder } = useParams();
+  const { lessonOrder } = useParams();
   const carouseRef = useRef();
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ const Quiz = ({ props }) => {
       }
     };
     fetchQuizzes();
-  }, [chapterOrder, lessonOrder, auth]);
+  }, [lessonOrder, auth]);
 
   // Chuyển sang câu tiếp theo.
   const handleNextQuiz = () => {

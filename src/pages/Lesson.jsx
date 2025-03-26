@@ -24,6 +24,7 @@ import TextArea from "antd/es/input/TextArea";
 import Comment from "../components/Comment";
 import { AuthContext } from "../context/AuthContext";
 import apiClient from "../services/apiClient";
+import { TitleContext } from "../context/TitleContext";
 
 const commentItems = [
   {
@@ -69,32 +70,36 @@ const Lesson = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [chapters, setChapters] = useState([]);
+  const { titles, setTitles } = useContext(TitleContext);
 
   useEffect(() => {
-    if (auth.grade) {
-      const fetchContent = async () => {
-        switch (artifact) {
-          case "slide":
-            setSelectedKey("1");
-            break;
-          case "video":
-            setSelectedKey("2");
-            break;
-          case "exercise":
-            setSelectedKey("3");
-            break;
-          default:
-            setSelectedKey("1");
-        }
+    const fetchContent = async () => {
+      switch (artifact) {
+        case "slide":
+          setSelectedKey("1");
+          break;
+        case "video":
+          setSelectedKey("2");
+          break;
+        case "exercise":
+          setSelectedKey("3");
+          break;
+        default:
+          setSelectedKey("1");
+      }
 
+      if (titles.length > 0) {
+        setChapters(titles);
+      } else {
         const response = await apiClient.get(
           `/api/chapters/grade/${auth.grade}/details`
         );
         const data = response.data;
+        setTitles(data);
         setChapters(data);
-      };
-      fetchContent();
-    }
+      }
+    };
+    fetchContent();
   }, [auth, chapterOrder, lessonOrder, artifact]);
 
   const chapter = chapters?.find(

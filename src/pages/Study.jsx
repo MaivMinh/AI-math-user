@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 import Comment from "../components/Comment.jsx";
 import apiClient from "../services/apiClient.js";
+import { TitleContext } from "../context/TitleContext.jsx";
 
 const commentItems = [
   {
@@ -59,32 +60,36 @@ const Study = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [chapters, setChapters] = useState([]);
-
-  /// Mặc định đây là private page. Thế nên khi đã vào được trang này thì các thông tin ở AppContext sẽ được load sẵn.
-  /// Nên do đó không cần phải kiểm tra accountId, grade, chapters, ... ở đây nữa.
-  /// Và vì vậy về cơ bản là grade không bao giờ bị null.
+  const { titles, setTitles } = useContext(TitleContext);
 
   useEffect(() => {
-    if (auth.grade) {
-      const fetchData = async () => {
-        try {
-          const response = await apiClient.get(
-            `/api/chapters/grade/${auth.grade}/details`
-          );
-          const data = response.data;
-          setChapters(data);
-          setSelectedChapter(data[0]);
-          content.current = data[0];
-          setLoading(false);
-          setError(false);
-        } catch (error) {
-          console.log(error);
-          setError(true);
-          setLoading(false);
-        }
-      };
-      fetchData();
-    }
+    const fetchData = async () => {
+      if (titles.length > 0) {
+        setChapters(titles);
+        setSelectedChapter(titles[0]);
+        content.current = titles[0];
+        setLoading(false);
+        setError(false);
+        return;
+      }
+      try {
+        const response = await apiClient.get(
+          `/api/chapters/grade/${auth.grade}/details`
+        );
+        const data = response.data;
+        setTitles(data);
+        setChapters(data);
+        setSelectedChapter(data[0]);
+        content.current = data[0];
+        setLoading(false);
+        setError(false);
+      } catch (error) {
+        console.log(error);
+        setError(true);
+        setLoading(false);
+      }
+    };
+    fetchData();
   }, [auth]);
 
   const handleSelectChapter = (chapter) => {

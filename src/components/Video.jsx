@@ -11,23 +11,20 @@ const Video = ({ props }) => {
   const [lesson, setLesson] = useState(null);
 
   useEffect(() => {
-    if (auth.grade) {
-      const fetchLessonDetails = async () => {
-        setLoading(true);
-        try {
-          const response = await apiClient.get(
-            `/api/lesson/grade/${auth.grade}/chapterorder/${auth.grade}/lessonorder/${lessonOrder}`
-          );
-          console.log(response);
-          setLesson(response.data);
-        } catch (error) {
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchLessonDetails();
-    }
-  }, [chapterOrder, lessonOrder, auth]);
+    const fetchLessonDetails = async () => {
+      setLoading(true);
+      try {
+        const response = await apiClient.get(
+          `/api/lesson/grade/${auth.grade}/lessonorder/${lessonOrder}`
+        );
+        setLesson(response.data);
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLessonDetails();
+  }, [lessonOrder, auth]);
 
   let contentLink = lesson?.lessonContent;
   const embededUrl = getYouTubeEmbedUrl(contentLink);
