@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Button, Card, Divider, Badge, Progress, Modal } from "antd";
 import {
   CheckCircleFilled,
-  CiCircleFilled,
-  CloseCircleFilled,
   EyeFilled,
   TrophyOutlined,
   UndoOutlined,

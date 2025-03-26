@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import MultipleChoice from "./MultipleChoice.jsx";
-import base from "../services/base.js";
 import { AuthContext } from "../context/AuthContext.jsx";
 import {
   BackwardOutlined,
@@ -10,21 +9,28 @@ import {
 import { Button, Carousel, ConfigProvider, Skeleton } from "antd";
 import { useRef } from "react";
 import CalculateResult from "./CalculateResult.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import apiClient from "../services/apiClient.js";
 
-const Quiz = ({ chapter, lesson, height, props }) => {
+const arrowStyle = {
+  color: "#5405F7", // Màu sắc của mũi tên
+};
+
+const Quiz = ({ props }) => {
   const [questions, setQuestions] = useState([]);
   const { grade } = useContext(AuthContext);
   const [answers, setAnswers] = useState([]); /// Danh sách câu trả lời của người dùng
   const [loading, setLoading] = useState(false);
+  const { chapterOrder, lessonOrder } = useParams();
+  const carouseRef = useRef();
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuizzes = async () => {
       setLoading(true);
       try {
-        const response = await base.get(
-          `/api/question/grade/1/lessonorder/1`
+        const response = await apiClient.get(
+          `/api/question/grade/${grade}/lessonorder/${lessonOrder}`
         );
         const data = response.data;
         console.log(data);
@@ -38,9 +44,7 @@ const Quiz = ({ chapter, lesson, height, props }) => {
       }
     };
     fetchQuizzes();
-  }, []);
-
-  const carouseRef = useRef();
+  }, [chapterOrder, lessonOrder, grade]);
 
   // Chuyển sang câu tiếp theo.
   const handleNextQuiz = () => {
@@ -53,10 +57,6 @@ const Quiz = ({ chapter, lesson, height, props }) => {
 
   const handleGoBackQuestion = (index) => {
     carouseRef.current.goTo(index);
-  };
-
-  const arrowStyle = {
-    color: "#5405F7", // Màu sắc của mũi tên
   };
 
   const PrevArrow = (props) => {
@@ -98,7 +98,7 @@ const Quiz = ({ chapter, lesson, height, props }) => {
   };
 
   return (
-    <div className={`w-full h-[${height}px] relative`}>
+    <div className={`w-full h-[450px] relative`}>
       {questions?.length > 0 ? (
         <>
           <Button
@@ -120,7 +120,7 @@ const Quiz = ({ chapter, lesson, height, props }) => {
             theme={{ components: { Carousel: { arrowSize: 50 } } }}
           >
             <Carousel
-              style={{ width: "100%", height: `${height}px` }}
+              style={{ width: "100%", height: `450px` }}
               ref={carouseRef}
               infinite={false}
               speed={1000}
@@ -141,13 +141,13 @@ const Quiz = ({ chapter, lesson, height, props }) => {
               <CalculateResult
                 questions={questions}
                 answers={answers}
-                height={height}
+                height={450}
                 handleGoBackQuestion={handleGoBackQuestion}
               />
             </Carousel>
           </ConfigProvider>
           <p
-            className={`w-full text-right my-5 flex flex-row justify-between items-center absolute -bottom-16 right-0`}
+            className={`w-full text-right mt-5 flex flex-row justify-between items-center absolute -bottom-16 right-0`}
           >
             <button
               className="bg-[#B18CFE] text-white px-3 py-1 rounded-lg ml-4 hover:bg-[#b08cfec4] transition-colors duration-300 font-semibold text-lg cursor-pointer"
@@ -191,7 +191,7 @@ const Quiz = ({ chapter, lesson, height, props }) => {
                 color="purple"
                 variant="filled"
                 size="large"
-                onClick={() => navigate('/bai-hoc')}
+                onClick={() => navigate("/study/")}
               >
                 Quay lại
               </Button>

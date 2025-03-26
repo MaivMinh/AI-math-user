@@ -16,8 +16,8 @@ import Practice from "./pages/Practice.jsx";
 import Forum from "./pages/Forum.jsx";
 import MathGame from "./pages/MathGame.jsx";
 import BattleField from "./pages/BattleField.jsx";
-import Lesson from "./pages/Lesson.jsx";
 import Profile from "./components/Profile.jsx";
+import Lesson from "./pages/Lesson.jsx";
 
 function App() {
   return (
@@ -30,11 +30,8 @@ function App() {
             <Route index element={<Home />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/bai-hoc/" element={<Study />} />
-            <Route
-              path="/bai-hoc/:chapterName/:lessonName/:artifact"
-              element={<Lesson />}
-            />
+            <Route path="/study" element={<Study />} />
+            <Route path="/study/chapters/:chapterOrder/lessons/:lessonOrder/:artifact" element={<Lesson />} />
             <Route path="/kiem-tra-them" element={<Practice />} />
             <Route path="/dien-dan" element={<Forum />} />
             <Route path="/tro-choi-toan-hoc" element={<MathGame />} />

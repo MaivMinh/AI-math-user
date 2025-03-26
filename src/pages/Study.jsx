@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 import Comment from "../components/Comment.jsx";
 import toASCIISlug from "../utils/slug.js";
-import base from "../services/base.js";
+import apiClient from "../services/apiClient.js";
 
 const commentItems = [
   {
@@ -69,7 +69,7 @@ const Study = () => {
     if (grade) {
       const fetchData = async () => {
         try {
-          const response = await base.get(
+          const response = await apiClient.get(
             `/api/chapters/grade/${grade}/details`
           );
           const data = response.data;
@@ -291,39 +291,21 @@ const Study = () => {
                         </p>
                         <p className="col-span-3 flex flex-row justify-end items-center gap-x-10">
                           <Link
-                            to={`${toASCIISlug(
-                              content.current.chapterName
-                            )}/${toASCIISlug(
-                              lesson.lessonName
-                            )}/slide?chapterOrder=${
-                              content.current.chapterOrder
-                            }&lessonOrder=${lesson.lessonOrder}`}
+                            to={`chapters/${content.current.chapterOrder}/lessons/${lesson.lessonOrder}/slide?`}
                           >
                             <span className="underline text-blue-500">
                               Slide
                             </span>
                           </Link>
                           <Link
-                            to={`${toASCIISlug(
-                              content.current.chapterName
-                            )}/${toASCIISlug(
-                              lesson.lessonName
-                            )}/video?chapterOrder=${
-                              content.current.chapterOrder
-                            }&lessonOrder=${lesson.lessonOrder}`}
+                            to={`chapters/${content.current.chapterOrder}/lessons/${lesson.lessonOrder}/video?`}
                           >
                             <span className="underline text-blue-500">
                               Video
                             </span>
                           </Link>
                           <Link
-                            to={`${toASCIISlug(
-                              content.current.chapterName
-                            )}/${toASCIISlug(
-                              lesson.lessonName
-                            )}/bai-tap?chapterOrder=${
-                              content.current.chapterOrder
-                            }&lessonOrder=${lesson.lessonOrder}`}
+                            to={`chapters/${content.current.chapterOrder}/lessons/${lesson.lessonOrder}/exercise?`}
                           >
                             <span className="underline text-blue-500">
                               Bài tập

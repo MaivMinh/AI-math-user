@@ -57,7 +57,7 @@ const Header = () => {
 
   const handleLessonButtonClick = (e) => {
     /// Sắp tới sẽ fetch dữ liệu cho lesson.
-    navigate(`/bai-hoc/`);
+    navigate(`/study/`);
   };
 
   const menuUser = (
@@ -70,15 +70,7 @@ const Header = () => {
           </span>
         </Link>
       </Menu.Item>
-      <Menu.Item key="1">
-        <Link to={`/statistics`}>
-          <span className="text-[#85A900] flex flex-row items-center gap-x-2">
-            <LineChartOutlined />
-            Thống kê học tập
-          </span>
-        </Link>
-      </Menu.Item>
-      <Menu.Item key={2}>
+      <Menu.Item key={1}>
         <Link to={`/achievements`}>
           <span className="text-[#85A900] flex flex-row items-center gap-x-2">
             <TrophyOutlined />
@@ -86,7 +78,7 @@ const Header = () => {
           </span>
         </Link>
       </Menu.Item>
-      <Menu.Item key={3}>
+      <Menu.Item key={2}>
         <Link to={`/my-wallet`}>
           <span className="text-[#85A900] flex flex-row items-center gap-x-2">
             <WalletOutlined />
@@ -126,6 +118,9 @@ const Header = () => {
               width: "800px",
               borderWidth: "1px",
               borderColor: "#85A900",
+              borderRadius: "20px",
+              fontWeight: "500",
+              color: "#85A900",
             }}
             placeholder="Tìm kiếm theo tên chương, tên bài học..."
             suffix={
@@ -185,7 +180,7 @@ const Header = () => {
         <Button type="text" onClick={handleLessonButtonClick}>
           <span
             className={
-              location.pathname.startsWith("/bai-hoc") ? activeStyle : inactiveStyle
+              location.pathname.startsWith("/study") ? activeStyle : inactiveStyle
             }
           >
             HỌC BÀI

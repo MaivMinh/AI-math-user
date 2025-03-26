@@ -1,7 +1,34 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import getYouTubeEmbedUrl from "../utils/transformEmbededUrl.js";
+import { useParams } from "react-router-dom";
+import apiClient from "../services/apiClient.js";
+import { AuthContext } from "../context/AuthContext.jsx";
 
-const Video = ({ chapter, lesson, height, ...props }) => {
+const Video = ({ props }) => {
+  const { chapterOrder, lessonOrder } = useParams();
+  const [loading, setLoading] = useState(false);
+  const { grade } = useContext(AuthContext);
+  const [lesson, setLesson] = useState(null);
+
+  useEffect(() => {
+    if (grade) {
+      const fetchLessonDetails = async () => {
+        setLoading(true);
+        try {
+          const response = await apiClient.get(
+            `/api/lesson/grade/${grade}/chapterorder/${grade}/lessonorder/${lessonOrder}`
+          );
+          console.log(response);
+          setLesson(response.data);
+        } catch (error) {
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchLessonDetails();
+    }
+  }, [chapterOrder, lessonOrder, grade]);
+
   let contentLink = lesson?.lessonContent;
   const embededUrl = getYouTubeEmbedUrl(contentLink);
 
@@ -10,7 +37,7 @@ const Video = ({ chapter, lesson, height, ...props }) => {
       {embededUrl ? (
         <iframe
           width="100%"
-          height={height}
+          height={450}
           src={embededUrl}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope;"
           title="Embedded YouTube Video"
