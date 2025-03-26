@@ -3,8 +3,10 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const PrivateRoute = ({ children }) => {
-  const { auth } = useContext(AuthContext);
+  const { auth, loading } = useContext(AuthContext);
   const location = useLocation();
+
+  if (loading) return;
 
   return auth.isAuthenticated ? (
     children

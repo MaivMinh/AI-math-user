@@ -10,6 +10,7 @@ export const AuthContext = createContext({
   },
   login: () => {},
   logout: () => {},
+  loading: null,
 });
 export const AuthContextProvider = ({ children }) => {
   const [auth, setAuth] = useState({
@@ -18,6 +19,8 @@ export const AuthContextProvider = ({ children }) => {
     role: null,
     grade: null,
   });
+
+  const [loading, setLoading] = useState(true);
 
   // Load auth data from localStorage when app starts
   useEffect(() => {
@@ -34,6 +37,7 @@ export const AuthContextProvider = ({ children }) => {
         };
       });
     }
+    setLoading(false);
   }, []);
 
   async function handleLogin(token) {
@@ -83,6 +87,7 @@ export const AuthContextProvider = ({ children }) => {
         auth: auth,
         login: handleLogin,
         logout: handleLogout,
+        loading: loading,
       }}
     >
       {children}
