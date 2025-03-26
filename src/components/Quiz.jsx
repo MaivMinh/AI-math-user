@@ -18,7 +18,7 @@ const arrowStyle = {
 
 const Quiz = ({ props }) => {
   const [questions, setQuestions] = useState([]);
-  const { grade } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const [answers, setAnswers] = useState([]); /// Danh sách câu trả lời của người dùng
   const [loading, setLoading] = useState(false);
   const { chapterOrder, lessonOrder } = useParams();
@@ -30,7 +30,7 @@ const Quiz = ({ props }) => {
       setLoading(true);
       try {
         const response = await apiClient.get(
-          `/api/question/grade/${grade}/lessonorder/${lessonOrder}`
+          `/api/question/grade/${auth.grade}/lessonorder/${lessonOrder}`
         );
         const data = response.data;
         console.log(data);
@@ -44,7 +44,7 @@ const Quiz = ({ props }) => {
       }
     };
     fetchQuizzes();
-  }, [chapterOrder, lessonOrder, grade]);
+  }, [chapterOrder, lessonOrder, auth]);
 
   // Chuyển sang câu tiếp theo.
   const handleNextQuiz = () => {

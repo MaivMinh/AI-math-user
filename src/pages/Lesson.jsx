@@ -60,7 +60,7 @@ const commentItems = [
 ];
 
 const Lesson = () => {
-  const { accountId, grade } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedKey, setSelectedKey] = useState(null);
   const [comments, setComments] = React.useState(commentItems);
@@ -71,7 +71,7 @@ const Lesson = () => {
   const [chapters, setChapters] = useState([]);
 
   useEffect(() => {
-    if (grade) {
+    if (auth.grade) {
       const fetchContent = async () => {
         switch (artifact) {
           case "slide":
@@ -88,14 +88,14 @@ const Lesson = () => {
         }
 
         const response = await apiClient.get(
-          `/api/chapters/grade/${grade}/details`
+          `/api/chapters/grade/${auth.grade}/details`
         );
         const data = response.data;
         setChapters(data);
       };
       fetchContent();
     }
-  }, [grade, chapterOrder, lessonOrder, artifact]);
+  }, [auth, chapterOrder, lessonOrder, artifact]);
 
   const chapter = chapters?.find(
     (chapter) => chapter.chapterOrder === parseInt(chapterOrder)
@@ -166,7 +166,7 @@ const Lesson = () => {
       return;
     }
     const newComment = {
-      user_id: accountId,
+      user_id: auth.accountId,
       name: "Mai Van Minh", /// Các thông tin như name, avatar, sẽ được lấy từ db khi gửi về server.
       avatar: "https://randomuser.me/api/portraits/men/78.jpg",
       timestamp: new Date().toLocaleString(),

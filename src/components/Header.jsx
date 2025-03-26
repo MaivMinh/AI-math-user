@@ -1,10 +1,8 @@
 import React, { useContext } from "react";
 import header_logo from "../assets/images/header_logo.png";
 import { Badge, Button, Dropdown, Input, Menu } from "antd";
-import toASCIISlug from "../utils/slug.js";
 import {
   BellOutlined,
-  LineChartOutlined,
   LogoutOutlined,
   SearchOutlined,
   TrophyOutlined,

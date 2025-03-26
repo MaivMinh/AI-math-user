@@ -9,7 +9,6 @@ import {
 import { Link } from "react-router-dom";
 import TextArea from "antd/es/input/TextArea";
 import Comment from "../components/Comment.jsx";
-import toASCIISlug from "../utils/slug.js";
 import apiClient from "../services/apiClient.js";
 
 const commentItems = [
@@ -55,7 +54,7 @@ const Study = () => {
   const [comments, setComments] = React.useState(commentItems);
   const content = useRef(null);
   const [text, setText] = React.useState("");
-  const { accountId, grade } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const [seletedChapter, setSelectedChapter] = React.useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -66,11 +65,11 @@ const Study = () => {
   /// Và vì vậy về cơ bản là grade không bao giờ bị null.
 
   useEffect(() => {
-    if (grade) {
+    if (auth.grade) {
       const fetchData = async () => {
         try {
           const response = await apiClient.get(
-            `/api/chapters/grade/${grade}/details`
+            `/api/chapters/grade/${auth.grade}/details`
           );
           const data = response.data;
           setChapters(data);
@@ -86,7 +85,7 @@ const Study = () => {
       };
       fetchData();
     }
-  }, [grade]);
+  }, [auth]);
 
   const handleSelectChapter = (chapter) => {
     setSelectedChapter({
@@ -101,7 +100,7 @@ const Study = () => {
       return;
     }
     const newComment = {
-      user_id: accountId,
+      user_id: auth.accountId,
       name: "Mai Van Minh", /// Các thông tin như name, avatar, sẽ được lấy từ db khi gửi về server.
       avatar: "https://randomuser.me/api/portraits/men/78.jpg",
       timestamp: new Date().toLocaleString(),

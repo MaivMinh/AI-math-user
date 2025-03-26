@@ -18,6 +18,7 @@ import MathGame from "./pages/MathGame.jsx";
 import BattleField from "./pages/BattleField.jsx";
 import Profile from "./components/Profile.jsx";
 import Lesson from "./pages/Lesson.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
 
 function App() {
   return (
@@ -27,15 +28,78 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/study" element={<Study />} />
-            <Route path="/study/chapters/:chapterOrder/lessons/:lessonOrder/:artifact" element={<Lesson />} />
-            <Route path="/kiem-tra-them" element={<Practice />} />
-            <Route path="/dien-dan" element={<Forum />} />
-            <Route path="/tro-choi-toan-hoc" element={<MathGame />} />
-            <Route path="/dau-truong" element={<BattleField />} />
+            <Route
+              index
+              element={
+                <PrivateRoute>
+                  <Home />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <PrivateRoute>
+                  <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/home"
+              element={
+                <PrivateRoute>
+                  <Home />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/study/"
+              element={
+                <PrivateRoute>
+                  <Study />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/study/chapters/:chapterOrder/lessons/:lessonOrder/:artifact"
+              element={
+                <PrivateRoute>
+                  <Lesson />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/kiem-tra-them"
+              element={
+                <PrivateRoute>
+                  <Practice />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dien-dan"
+              element={
+                <PrivateRoute>
+                  <Forum />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/tro-choi-toan-hoc"
+              element={
+                <PrivateRoute>
+                  <MathGame />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/dau-truong"
+              element={
+                <PrivateRoute>
+                  <BattleField />
+                </PrivateRoute>
+              }
+            />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

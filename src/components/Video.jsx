@@ -7,16 +7,16 @@ import { AuthContext } from "../context/AuthContext.jsx";
 const Video = ({ props }) => {
   const { chapterOrder, lessonOrder } = useParams();
   const [loading, setLoading] = useState(false);
-  const { grade } = useContext(AuthContext);
+  const { auth } = useContext(AuthContext);
   const [lesson, setLesson] = useState(null);
 
   useEffect(() => {
-    if (grade) {
+    if (auth.grade) {
       const fetchLessonDetails = async () => {
         setLoading(true);
         try {
           const response = await apiClient.get(
-            `/api/lesson/grade/${grade}/chapterorder/${grade}/lessonorder/${lessonOrder}`
+            `/api/lesson/grade/${auth.grade}/chapterorder/${auth.grade}/lessonorder/${lessonOrder}`
           );
           console.log(response);
           setLesson(response.data);
@@ -27,7 +27,7 @@ const Video = ({ props }) => {
       };
       fetchLessonDetails();
     }
-  }, [chapterOrder, lessonOrder, grade]);
+  }, [chapterOrder, lessonOrder, auth]);
 
   let contentLink = lesson?.lessonContent;
   const embededUrl = getYouTubeEmbedUrl(contentLink);
