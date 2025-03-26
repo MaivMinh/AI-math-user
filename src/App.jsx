@@ -20,6 +20,7 @@ import Profile from "./components/Profile.jsx";
 import Lesson from "./pages/Lesson.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import { TitleContextProvider } from "./context/TitleContext.jsx";
+import Search from "./pages/Search.jsx";
 
 function App() {
   return (
@@ -99,6 +100,14 @@ function App() {
                 element={
                   <PrivateRoute>
                     <BattleField />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/search"
+                element={
+                  <PrivateRoute>
+                    <Search />
                   </PrivateRoute>
                 }
               />
