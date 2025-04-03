@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import logo from "../assets/images/logo.png";
-import { Alert, Button, Form, Modal, notification } from "antd";
+import { Alert, Button, Form, Input, Modal, notification } from "antd";
 import {
   CheckCircleOutlined,
+  FieldTimeOutlined,
   LockOutlined,
   MailOutlined,
   PhoneOutlined,
   SyncOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import Input from "../components/Input";
 import register_background from "../assets/images/register_background.png";
 import { Link, useNavigate } from "react-router-dom";
 import apiClient from "../services/apiClient";
@@ -34,7 +34,7 @@ const Register = () => {
     });
   };
 
-  const onFinish = async () => {
+  const onFinish = async (form) => {
     setLoading(true);
     if (password !== confirmPassword) {
       setLoading(false);
@@ -43,13 +43,13 @@ const Register = () => {
     }
 
     const registration = {
-      userName: fullname,
-      email: email,
-      phoneNumber: phoneNumber,
-      password: password,
-      dob: dateOfBirth,
+      userName: form.fullname,
+      email: form.email,
+      phoneNumber: form.phoneNumber,
+      password: form.password,
+      dob: form.dateOfBirth,
     };
-
+    console.log(registration);
     try {
       const response = await apiClient.post(
         "/account/register/user",
@@ -74,6 +74,15 @@ const Register = () => {
 
   const width = loading ? "50%" : 150;
   const background = loading ? "#B18CFE" : "#85A900";
+
+  const passwordValidationRules = [
+    { required: true, message: "Vui lòng nhập mật khẩu!" },
+    {
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+      message:
+        "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường và số.",
+    },
+  ];
 
   return (
     <div
@@ -121,131 +130,140 @@ const Register = () => {
           layout="vertical"
           onFinish={onFinish}
           autoComplete="off"
-          style={{ width: "100%", padding: "0 24px", marginTop: 24 }}
+          style={{ width: "100%", padding: "0 24px", marginTop: 32 }}
         >
-          <Form.Item
-            name={"fullname"}
-            style={{ marginBottom: 24, position: "relative" }}
-          >
-            <Input
-              name={"fullname"}
-              type={"fullname"}
-              label={"Họ và tên"}
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
-              autoFocus
-            />
-            <UserOutlined
-              style={{
-                position: "absolute",
-                top: "50%",
-                right: "1rem",
-                transform: "translateY(-50%)",
-                color: "#B18CFE",
-                fontSize: "1rem",
-              }}
-            />
+          <Form.Item name={"fullname"} style={{ marginBottom: 36 }}>
+            <div className="relative">
+              <p className="absolute -top-6 flex flex-row gap-x-1 items-center justify-center">
+                <span className="text-red-600">*</span>
+                <span className="text-gray-500 text-sm">Họ và tên</span>
+              </p>
+              <Input
+                type="text"
+                size="large"
+                autoFocus={true}
+                placeholder="Lionel Messi..."
+                prefix={
+                  <UserOutlined
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "1rem",
+                      transform: "translateY(-50%)",
+                      color: "#B18CFE",
+                      fontSize: "1rem",
+                    }}
+                  />
+                }
+              />
+            </div>
           </Form.Item>
-          <Form.Item
-            name={"email"}
-            style={{ marginBottom: 24, position: "relative" }}
-          >
-            <Input
-              name={"email"}
-              type={"email"}
-              label={"Email"}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <MailOutlined
-              style={{
-                position: "absolute",
-                top: "50%",
-                right: "1rem",
-                transform: "translateY(-50%)",
-                color: "#B18CFE",
-                fontSize: "1rem",
-              }}
-            />
+          <Form.Item name={"email"} style={{ marginBottom: 36 }}>
+            <div className="relative">
+              <p className="absolute -top-6 flex flex-row gap-x-1 items-center justify-center">
+                <span className="text-red-600">*</span>
+                <span className="text-gray-500 text-sm">Email</span>
+              </p>
+              <Input
+                type="email"
+                size="large"
+                placeholder="example@gmail.com"
+                prefix={
+                  <MailOutlined
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "1rem",
+                      transform: "translateY(-50%)",
+                      color: "#B18CFE",
+                      fontSize: "1rem",
+                    }}
+                  />
+                }
+              />
+            </div>
           </Form.Item>
-          <Form.Item
-            name={"dateOfBirth"}
-            style={{ marginBottom: 24, position: "relative" }}
-          >
-            <Input
-              name={"dateOfBirth"}
-              type={"date"}
-              label={"Ngày sinh"}
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
-            />
+          <Form.Item name={"dateOfBirth"} style={{ marginBottom: 36 }}>
+            <div className="relative">
+              <p className="absolute -top-6 flex flex-row gap-x-1 items-center justify-center">
+                <span className="text-red-600">*</span>
+                <span className="text-gray-500 text-sm">Ngày sinh</span>
+              </p>
+              <Input defaultValue={"1975-04-30"} type="date" size="large" />
+            </div>
           </Form.Item>
-          <Form.Item
-            name={"phoneNumber"}
-            style={{ marginBottom: 24, position: "relative" }}
-          >
-            <Input
-              name={"phoneNumber"}
-              type={"text"}
-              label={"Số điện thoại"}
-              value={phoneNumber}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-            />
-            <PhoneOutlined
-              style={{
-                position: "absolute",
-                top: "50%",
-                right: "1rem",
-                transform: "translateY(-50%)",
-                color: "#B18CFE",
-                fontSize: "1rem",
-              }}
-            />
+          <Form.Item name={"phoneNumber"} style={{ marginBottom: 36 }}>
+            <div className="relative">
+              <p className="absolute -top-6 flex flex-row gap-x-1 items-center justify-center">
+                <span className="text-red-600">*</span>
+                <span className="text-gray-500 text-sm">Số điện thoại</span>
+              </p>
+              <Input
+                type="text"
+                size="large"
+                placeholder="0123456789"
+                prefix={
+                  <PhoneOutlined
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "1rem",
+                      transform: "translateY(-50%)",
+                      color: "#B18CFE",
+                      fontSize: "1rem",
+                    }}
+                  />
+                }
+              />
+            </div>
           </Form.Item>
           <Form.Item
             name={"password"}
-            style={{ marginBottom: 24, position: "relative" }}
+            style={{ marginBottom: 36 }}
+            rules={passwordValidationRules}
             hasFeedback
           >
-            <Input
-              name={"password"}
-              type={"password"}
-              label={"Mật khẩu"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <LockOutlined
-              style={{
-                position: "absolute",
-                top: "50%",
-                right: "1rem",
-                transform: "translateY(-50%)",
-                color: "#B18CFE",
-                fontSize: "1rem",
-              }}
-            />
+            <div className="relative">
+              <p className="absolute -top-6 flex flex-row gap-x-1 items-center justify-center">
+                <span className="text-red-600">*</span>
+                <span className="text-gray-500 text-sm">Mật khẩu</span>
+              </p>
+              <Input.Password
+                name="password"
+                size="large"
+                placeholder="Mật khẩu..."
+              />
+            </div>
           </Form.Item>
           <Form.Item
             name={"confirmPassword"}
-            style={{ marginBottom: 24, position: "relative" }}
+            style={{ marginBottom: 36 }}
+            dependencies={["password"]}
+            hasFeedback
+            rules={[
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error("Mật khẩu xác nhận không khớp!")
+                  );
+                },
+              }),
+            ]}
           >
-            <Input
-              name={"confirmPassword"}
-              type={"password"}
-              label={"Nhập lại mật khẩu"}
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <CheckCircleOutlined
-              style={{
-                position: "absolute",
-                top: "50%",
-                right: "1rem",
-                transform: "translateY(-50%)",
-                color: "#B18CFE",
-                fontSize: "1rem",
-              }}
-            />
+            <div className="relative">
+              <p className="absolute -top-6 flex flex-row gap-x-1 items-center justify-center">
+                <span className="text-red-600">*</span>
+                <span className="text-gray-500 text-sm">Nhập lại mật khẩu</span>
+              </p>
+              <Input.Password
+                type="password"
+                size="large"
+                placeholder="Xác nhận mật khẩu..."
+              />
+            </div>
           </Form.Item>
           <p className="flex flex-row items-center justify-between w-full">
             <p>

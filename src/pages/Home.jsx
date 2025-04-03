@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Button, Carousel, Drawer, Input, message } from "antd";
 import { MessageOutlined, TrophyFilled } from "@ant-design/icons";
 import React from "react";
@@ -6,7 +6,8 @@ import logo_v2 from "../assets/images/logo_v2.png";
 import { useNavigate } from "react-router-dom";
 import chatbotSerivce from "../services/chatbotService";
 import TextArea from "antd/es/input/TextArea";
-import ChapterCard from "../components/Home/ChapterCard"
+import ChapterCard from "../components/Home/ChapterCard";
+import UserContext from "../context/UserContext";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ const Home = () => {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
+  const { user, loading } = useContext(UserContext);
 
   const contentStyle = {
     height: "300px",
@@ -89,11 +91,7 @@ const Home = () => {
     <div className="min-h-screen w-[90%] mx-auto relative">
       {contextHolder}
       <div className="carousel">
-        <Carousel
-          autoplay={false}
-          autoplaySpeed={5000}
-          speed={1000}
-        >
+        <Carousel autoplay={false} autoplaySpeed={5000} speed={1000}>
           <div style={contentStyle}>
             <h3 style={contentStyle} className="grid grid-cols-10 h-full">
               <p className="col-span-2 h-full flex items-center">
@@ -151,7 +149,7 @@ const Home = () => {
           <ChapterCard chapter={1} lesson={1} colour={"#B18CFE"} />
         </div>
       </div>
-      
+
       <div className="fixed bottom-5 right-5">
         <Button
           type="primary"
