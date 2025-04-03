@@ -21,6 +21,10 @@ import Lesson from "./pages/Lesson.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 import { TitleContextProvider } from "./context/TitleContext.jsx";
 import Search from "./pages/Search.jsx";
+import GoogleLogin from "./components/GoogleLogin.jsx";
+import PublicRoute from "./components/PublicRoute.jsx";
+import ResetPassword from "./components/ResetPassword.jsx";
+import ForgotPassword from "./components/ForgotPassword.jsx";
 
 function App() {
   return (
@@ -28,8 +32,40 @@ function App() {
       <AuthContextProvider>
         <TitleContextProvider>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route
+              path="/login"
+              element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              }
+            />
+
+            <Route
+              path="/forgot-password/"
+              element={
+                <PublicRoute>
+                  <ForgotPassword />
+                </PublicRoute>
+              }
+            />
+
+            <Route
+              path="/reset-password"
+              element={
+                <PublicRoute>
+                  <ResetPassword />
+                </PublicRoute>
+              }
+            />
             <Route path="/" element={<MainLayout />}>
               <Route
                 index
@@ -112,6 +148,7 @@ function App() {
                 }
               />
             </Route>
+            <Route path="/account/login/google" element={<GoogleLogin />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </TitleContextProvider>

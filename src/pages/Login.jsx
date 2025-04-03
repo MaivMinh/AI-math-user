@@ -1,39 +1,85 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import logo from "../assets/images/logo.png";
 import Title from "antd/es/typography/Title";
 import { UserOutlined, LockOutlined, SyncOutlined } from "@ant-design/icons";
-import { Alert, Button, Checkbox, Form, Input, Space } from "antd";
+import {
+  Alert,
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  message,
+  notification,
+  Space,
+} from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import facebook from "../assets/images/facebook.png";
 import google from "../assets/images/google.png";
 import { AuthContext } from "../context/AuthContext";
+import apiClient from "../services/apiClient";
 
 const Login = () => {
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/"; // Redirect after login
-  const { login } = useContext(AuthContext);
-
-  const onFinish = (values) => {
-    setLoading(true);
-    const data = {
-      accessToken:
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJBSSBNYXRoIGFwcGxpY2F0aW9uIiwiaWF0IjoxNzQwNzE3OTYzLCJleHAiOjE3NzIyNTM5NjMsImF1ZCI6IiIsInN1YiI6ImFjY2VzcyB0b2tlbiIsInJvbGUiOiJVU0VSIiwiYWNjb3VudF9pZCI6IjEiLCJncmFkZSI6IjEifQ.L6gDofA9j5NRpclABN3Ahjtr490niBz48mhqagGChPw",
-    };
-    setTimeout(() => {
-      setLoading(false);
-      login(data.accessToken);
-      navigate(from, { replace: true });
-    }, 3000);
+  const params = new URLSearchParams(location.search);
+  const registered = params.get("registered");
+  const [api, contextHolder] = notification.useNotification();
+  const openNotificationWithIcon = (type, title, description, duration) => {
+    api[type]({
+      message: title,
+      description: description,
+      duration: duration,
+    });
   };
+  const from = location.state?.from?.pathname || "/"; // Redirect after login
+  const { login, auth } = useContext(AuthContext);
 
+  useEffect(() => {
+    if (registered && registered === "true") {
+      openNotificationWithIcon(
+        "success",
+        "Đăng kí tài khoản thành công!",
+        "",
+        4
+      );
+      setTimeout(() => {
+        openNotificationWithIcon(
+          "success",
+          "Kích hoạt tài khoản",
+          "Email đã được gửi đến địa chỉ của bạn. Vui lòng kiểm tra email để kích hoạt tài khoản.",
+          0
+        );
+      }, 3500);
+    }
+  }, [registered]);
+
+  const onFinish = async (values) => {
+    try {
+      setLoading(true);
+      const response = await apiClient.post("/account/login", {
+        email: values.email,
+        password: values.password,
+      });
+      const { jwtToken } = response.data;
+      login(jwtToken);
+      navigate(from, { replace: true });
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+      setError(error.response?.data?.message || "Đăng nhập thất bại");
+      return;
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   const width = loading ? "100%" : 150;
   const background = loading ? "#B18CFE" : "#85A900";
 
   return (
     <div className="relative bg-gradient-to-tr from-[#80d0c7] via-[#85ffbd] to-[#fffb7d] overflow-hidden grid place-items-center min-h-screen w-screen grid-cols-2 gap-x-32 px-10">
+      {contextHolder}
       <div className="h-1/2 col-span-1 w-full flex flex-col items-end justify-center">
         <img src={logo} alt="login" className="h-full object-cover" />
       </div>
@@ -65,10 +111,8 @@ const Login = () => {
           style={{ width: "60%" }}
         >
           <Form.Item
-            name="username"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên đăng nhập!" },
-            ]}
+            name="email"
+            rules={[{ required: true, message: "Vui lòng nhập Email!" }]}
             style={{ marginBottom: 24 }}
           >
             <Input
@@ -76,7 +120,7 @@ const Login = () => {
               autoFocus="true"
               prefix={<UserOutlined />}
               style={{ color: "#85A900" }}
-              placeholder="Tên đăng nhập"
+              placeholder="Email"
             />
           </Form.Item>
           <Form.Item
@@ -110,6 +154,7 @@ const Login = () => {
                 type="link"
                 htmlType="button"
                 style={{ padding: 0, color: "#B18CFE", fontWeight: "700" }}
+                onClick={() => navigate("/forgot-password/")}
               >
                 Quên mật khẩu?
               </Button>
@@ -174,12 +219,9 @@ const Login = () => {
                 gap: 24,
               }}
             >
-              <Link to="/auth/facebook">
-                <img src={facebook} width={40} className="object-cover" />
-              </Link>
-              <Link to="/auth/google">
+              <a href="https://mathai.id.vn/account/login/google?returnUrl=http://localhost:5173/account/login/google">
                 <img src={google} width={40} className="object-cover" />
-              </Link>
+              </a>
             </Space>
           </Form.Item>
         </Form>

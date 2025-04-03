@@ -1,12 +1,14 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useState, useEffect, useContext } from "react";
+import apiClient from "../services/apiClient";
 
 export const AuthContext = createContext({
   auth: {
-    accountId: null,
+    email: null,
     role: null,
     isAuthenticated: false,
     grade: null,
+    userId: null,
   },
   login: () => {},
   logout: () => {},
@@ -14,69 +16,110 @@ export const AuthContext = createContext({
 });
 export const AuthContextProvider = ({ children }) => {
   const [auth, setAuth] = useState({
+    email: null,
     isAuthenticated: null,
-    accountId: null,
     role: null,
     grade: null,
+    userId: null,
   });
-
   const [loading, setLoading] = useState(true);
 
   // Load auth data from localStorage when app starts
   useEffect(() => {
     const token = localStorage.getItem("access-token");
-    const storedUser = JSON.parse(localStorage.getItem("user")); // Store user info separately
-    if (token && storedUser) {
+    if (token) {
+      const fetchData = async () => {
+        try {
+          const decodedToken = jwtDecode(token);
+          const id = decodedToken.sub;
+          const response = await apiClient.get(`/api/enrollment/id/${id}`);
+          const grade = response.data?.grade;
+          setAuth((prev) => {
+            return {
+              ...prev,
+              isAuthenticated: true,
+              email: decodedToken.email,
+              role: decodedToken.Role,
+              userId: decodedToken.sub,
+              grade: grade === undefined ? 1 : grade,
+            };
+          });
+        } catch (error) {
+          console.log(error);
+          setAuth((prev) => {
+            return {
+              ...prev,
+              isAuthenticated: false,
+              email: null,
+              role: null,
+              grade: null,
+              userId: null,
+            };
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData();
+    } else {
       setAuth((prev) => {
         return {
           ...prev,
-          isAuthenticated: true,
-          accountId: storedUser.accountId,
-          role: storedUser.role,
-          grade: storedUser.grade,
+          isAuthenticated: false,
+          email: null,
+          role: null,
+          grade: null,
+          userId: null,
         };
       });
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   async function handleLogin(token) {
     try {
       const decodedToken = jwtDecode(token);
-      const user = JSON.stringify({
-        isAuthenticated: true,
-        accountId: decodedToken.account_id,
-        role: decodedToken.role,
-        grade: decodedToken.grade,
-      });
       localStorage.setItem("access-token", token);
-      localStorage.setItem("user", user);
+      const id = decodedToken.sub;
+      const response = await apiClient.get(`/api/enrollment/id/${id}`);
+      const grade = response.data?.grade;
       setAuth((prev) => {
         return {
           ...prev,
           isAuthenticated: true,
-          accountId: decodedToken.account_id,
-          role: decodedToken.role,
-          grade: decodedToken.grade,
+          email: decodedToken.email,
+          role: decodedToken.Role,
+          userId: decodedToken.sub,
+          grade: grade === undefined ? 1 : grade,
         };
       });
     } catch (error) {
-      console.log(error);
-      setIsAuthenticated(false);
-      return;
+      setAuth((prev) => {
+        return {
+          ...prev,
+          isAuthenticated: false,
+          email: null,
+          role: null,
+          grade: null,
+          userId: null,
+        };
+      });
+      localStorage.removeItem("access-token");
+    } finally {
+      setLoading(false);
     }
   }
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("user");
+    localStorage.removeItem("access-token");
     setAuth((prev) => {
       return {
         ...prev,
         isAuthenticated: false,
-        accountId: null,
+        email: null,
         role: null,
         grade: null,
+        userId: null,
       };
     });
   };

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import logo from "../assets/images/logo.png";
-import { Button, Form } from "antd";
+import { Alert, Button, Form, Modal, notification } from "antd";
 import {
   CheckCircleOutlined,
   LockOutlined,
@@ -11,29 +11,65 @@ import {
 } from "@ant-design/icons";
 import Input from "../components/Input";
 import register_background from "../assets/images/register_background.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import apiClient from "../services/apiClient";
 
 const Register = () => {
+  const [api, contextHolder] = notification.useNotification();
   const [loading, setLoading] = useState(false);
-  const [username, setUsername] = useState("");
+  const [fullname, setFullname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
   const [email, setEmail] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
-  const onFinish = (values) => {
+  const openNotification = (desc) => {
+    api.warning({
+      message: "Thông báo",
+      description: desc,
+      placement: "topRight",
+      duration: 5,
+    });
+  };
+
+  const onFinish = async () => {
     setLoading(true);
+    if (password !== confirmPassword) {
+      setLoading(false);
+      openNotification("Mật khẩu không khớp. Vui lòng kiểm tra lại.");
+      return;
+    }
+
     const registration = {
-      username: values.username,
-      email: values.email,
-      phoneNumber: values.phoneNumber,
-      password: values.password,
+      userName: fullname,
+      email: email,
+      phoneNumber: phoneNumber,
+      password: password,
+      dob: dateOfBirth,
     };
 
-    setTimeout(() => {
+    try {
+      const response = await apiClient.post(
+        "/account/register/user",
+        registration
+      );
+      navigate("/login?registered=true");
+    } catch (error) {
+      warning(
+        "Đã xảy ra lỗi trong quá trình đăng kí tài khoản. Vui lòng thử lại sau."
+      );
+    } finally {
       setLoading(false);
-    }, 3000);
+    }
+  };
+
+  const warning = (message) => {
+    Modal.warning({
+      title: "Thông báo",
+      content: message,
+    });
   };
 
   const width = loading ? "50%" : 150;
@@ -48,6 +84,7 @@ const Register = () => {
         backgroundPosition: "center",
       }}
     >
+      {contextHolder}
       <div className="col-span-1 rounded-l-2xl flex flex-col items-center justify-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -79,14 +116,6 @@ const Register = () => {
         <p className="ml-8 mt-2 text-lg text-[#B18CFE] w-full text-wrap">
           Hãy tạo tài khoản của bạn và hoàn toàn miễn phí!
         </p>
-        {error && (
-          <Alert
-            message={error}
-            type="error"
-            showIcon
-            style={{ marginBottom: 24 }}
-          />
-        )}
         <Form
           name="register-form"
           layout="vertical"
@@ -95,15 +124,15 @@ const Register = () => {
           style={{ width: "100%", padding: "0 24px", marginTop: 24 }}
         >
           <Form.Item
-            name={"username"}
+            name={"fullname"}
             style={{ marginBottom: 24, position: "relative" }}
           >
             <Input
-              name={"username"}
-              type={"username"}
-              label={"Tên đăng nhập"}
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              name={"fullname"}
+              type={"fullname"}
+              label={"Họ và tên"}
+              value={fullname}
+              onChange={(e) => setFullname(e.target.value)}
               autoFocus
             />
             <UserOutlined
@@ -140,6 +169,18 @@ const Register = () => {
             />
           </Form.Item>
           <Form.Item
+            name={"dateOfBirth"}
+            style={{ marginBottom: 24, position: "relative" }}
+          >
+            <Input
+              name={"dateOfBirth"}
+              type={"date"}
+              label={"Ngày sinh"}
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+            />
+          </Form.Item>
+          <Form.Item
             name={"phoneNumber"}
             style={{ marginBottom: 24, position: "relative" }}
           >
@@ -164,6 +205,7 @@ const Register = () => {
           <Form.Item
             name={"password"}
             style={{ marginBottom: 24, position: "relative" }}
+            hasFeedback
           >
             <Input
               name={"password"}
