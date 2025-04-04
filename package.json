@@ -15,6 +15,7 @@
     "ant-design": "^1.0.0",
     "antd": "^5.24.1",
     "axios": "^1.7.9",
+    "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
     "react": "^19.0.0",
     "react-circular-progressbar": "^2.2.0",

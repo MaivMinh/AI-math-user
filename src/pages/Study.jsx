@@ -63,33 +63,35 @@ const Study = () => {
   const { titles, setTitles } = useContext(TitleContext);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (titles.length > 0) {
-        setChapters(titles);
-        setSelectedChapter(titles[0]);
-        content.current = titles[0];
-        setLoading(false);
-        setError(false);
-        return;
-      }
-      try {
-        const response = await apiClient.get(
-          `/api/chapters/grade/${auth.grade}/details`
-        );
-        const data = response.data;
-        setTitles(data);
-        setChapters(data);
-        setSelectedChapter(data[0]);
-        content.current = data[0];
-        setLoading(false);
-        setError(false);
-      } catch (error) {
-        console.log(error);
-        setError(true);
-        setLoading(false);
-      }
-    };
-    fetchData();
+    if (auth.isAuthenticated) {
+      const fetchData = async () => {
+        if (titles.length > 0) {
+          setChapters(titles);
+          setSelectedChapter(titles[0]);
+          content.current = titles[0];
+          setLoading(false);
+          setError(false);
+          return;
+        }
+        try {
+          const response = await apiClient.get(
+            `/api/chapters/grade/${auth.grade}/details`
+          );
+          const data = response.data;
+          setTitles(data);
+          setChapters(data);
+          setSelectedChapter(data[0]);
+          content.current = data[0];
+          setLoading(false);
+          setError(false);
+        } catch (error) {
+          console.log(error);
+          setError(true);
+          setLoading(false);
+        }
+      };
+      fetchData();
+    }
   }, [auth]);
 
   const handleSelectChapter = (chapter) => {

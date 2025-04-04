@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import React, { createContext, useState, useEffect, useContext } from "react";
 import apiClient from "../services/apiClient";
+import Cookies from "js-cookie";
 
 export const AuthContext = createContext({
   auth: {
@@ -112,6 +113,9 @@ export const AuthContextProvider = ({ children }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("access-token");
+    Cookies.remove("ACCESS_TOKEN")
+    Cookies.remove("REFRESH_TOKEN")
+    Cookies.remove(".AspNetCore.Cookies")
     setAuth((prev) => {
       return {
         ...prev,

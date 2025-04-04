@@ -50,7 +50,6 @@ function App() {
                   </PublicRoute>
                 }
               />
-
               <Route
                 path="/forgot-password/"
                 element={
@@ -65,6 +64,14 @@ function App() {
                 element={
                   <PublicRoute>
                     <ResetPassword />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path="/account/login/google"
+                element={
+                  <PublicRoute>
+                    <GoogleLogin />
                   </PublicRoute>
                 }
               />

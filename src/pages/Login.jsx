@@ -219,7 +219,7 @@ const Login = () => {
                 gap: 24,
               }}
             >
-              <a href="https://mathai.id.vn/account/login/google?returnUrl=http://localhost:5173/account/login/google">
+              <a href="http://localhost:8080/account/login/google?returnUrl=http://localhost:5173/account/login/google">
                 <img src={google} width={40} className="object-cover" />
               </a>
             </Space>
