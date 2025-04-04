@@ -105,6 +105,7 @@ const Lesson = () => {
   const chapter = chapters?.find(
     (chapter) => chapter.chapterOrder === parseInt(chapterOrder)
   );
+  
   const lesson = chapter?.lessons?.find(
     (lesson) => lesson.lessonOrder === parseInt(lessonOrder)
   );

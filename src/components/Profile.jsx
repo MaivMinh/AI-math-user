@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Card,
   Avatar,
@@ -22,10 +22,12 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { Line } from "@ant-design/plots";
+import UserContext from "../context/UserContext";
 
 const Profile = ({ userData }) => {
   const [enrollments, setEnrollments] = useState([]);
   const [activeTab, setActiveTab] = useState("1");
+  const { user, loading } = useContext(UserContext);
 
   // Mock data - replace with actual API calls
   useEffect(() => {
@@ -64,7 +66,7 @@ const Profile = ({ userData }) => {
     ];
 
     setEnrollments(mockEnrollments);
-  }, []);
+  }, [user, loading]);
 
   // Get current enrollment (most recent one)
   const currentEnrollment =
@@ -254,7 +256,7 @@ const Profile = ({ userData }) => {
           <div className="space-y-4">
             <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
               <div className="w-32 font-medium text-gray-600">Full Name:</div>
-              <div>Nguyễn Văn A</div>
+              <div>{user.userName}</div>
               <Button type="text" icon={<EditOutlined />} size="small" />
             </div>
             <Divider className="my-2" />
@@ -294,7 +296,7 @@ const Profile = ({ userData }) => {
               className="border-4 border-white shadow-md"
             />
             <div className="mt-4 md:mt-0 md:ml-6 text-center md:text-left">
-              <h1 className="text-2xl md:text-3xl font-bold">Nguyễn Văn A</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">{user.userName}</h1>
               <p className="text-gray-600 flex items-center justify-center md:justify-start mt-1">
                 <TrophyOutlined className="mr-2" />
                 Student ID: STU-{userData?.userId || "789"}

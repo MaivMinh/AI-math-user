@@ -16,7 +16,7 @@ import { AuthContext } from "../context/AuthContext";
 import apiClient from "../services/apiClient";
 
 const Header = () => {
-  const { logout } = useContext(AuthContext);
+  const { auth, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const [search, setSearch] = React.useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -57,7 +57,7 @@ const Header = () => {
       try {
         // Replace with your actual API endpoint
         const response = await apiClient.get(
-          `/api/lesson/grade/1/lessonname/${search}`
+          `/api/lesson/grade/${auth.grade}/lessonname/${search}`
         );
         setSuggestions(response.data);
         setLoading(false);
@@ -106,7 +106,9 @@ const Header = () => {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    navigate(`/study/chapters/1/lessons/${suggestion.lessonOrder}/slide`);
+    navigate(
+      `/study/chapters/${suggestion.chapterOrder}/lessons/${suggestion.lessonOrder}/slide`
+    );
     setShowSuggestions(false);
   };
 
